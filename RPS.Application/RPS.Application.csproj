@@ -8,8 +8,20 @@
 
     <ItemGroup>
       <Folder Include="Configs\" />
-      <Folder Include="Features\" />
       <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" Version="12.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.15" />
+      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RPS.Domain\RPS.Domain.csproj" />
+      <ProjectReference Include="..\RPS.Infrastructure\RPS.Infrastructure.csproj" />
+      <ProjectReference Include="..\RPS.Shared\RPS.Shared.csproj" />
     </ItemGroup>
 
 </Project>

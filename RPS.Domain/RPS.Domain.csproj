@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services.Abstractions\" />
+      <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="7.0.15" />
     </ItemGroup>
+
+
+
+    
+
 
 </Project>
