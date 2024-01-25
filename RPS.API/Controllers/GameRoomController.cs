@@ -28,13 +28,6 @@ public class GameRoomController : Controller
         _mediator = mediator;
     }
 
-    [HttpPost]
-    public async Task<JsonResult> Login([FromBody] LoginRequestDto model)
-    {
-        throw new NotImplementedException();
-        // return Json(await _serviceManager.AccountService.Login(model, ModelState));
-    }
-
     [HttpGet("/gameroom_info")]
     public async Task<JsonResult> GetGameRoomInfo([FromQuery] string id)
     {
