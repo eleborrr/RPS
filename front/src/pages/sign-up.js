@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import Header from '../components/header';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +29,9 @@ const SignUpForm = () => {
   };
 
   return (
+
     <div className="App">
+        
         <div className="appAside" />
         <div className="appForm">
           <div className="pageSwitcher">
@@ -138,6 +141,7 @@ const SignUpForm = () => {
     </div>
     </div>
       </div>
+    
   );
 };
 

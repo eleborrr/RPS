@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import {
-  FacebookLoginButton,
-  InstagramLoginButton
-} from "react-social-login-buttons";
 
 const SignInForm = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +27,7 @@ const SignInForm = () => {
 
   return (
     <div className="App">
+        
         <div className="appAside" />
         <div className="appForm">
           <div className="pageSwitcher">
@@ -104,16 +101,6 @@ const SignInForm = () => {
           <Link to="/" className="formFieldLink">
             Create an account
           </Link>
-        </div>
-
-        <div className="socialMediaButtons">
-          <div className="facebookButton">
-            <FacebookLoginButton onClick={() => alert("Hello")} />
-          </div>
-
-          <div className="instagramButton">
-            <InstagramLoginButton onClick={() => alert("Hello")} />
-          </div>
         </div>
       </form>
     </div>

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/game.css';
 import Header from '../components/header';
+import WaitingMessage from '../components/waiting-opponent';
 
 const Game = () => {
   const [playerName, setPlayerName] = useState('You');
   const [opponentName, setOpponentName] = useState('Sematary');
-  const [timer, setTimer] = useState(100); // Время на ход в секундах
-  const [gameState, setGameState] = useState('playing'); // 'waiting', 'playing', 'result'
+  const [timer, setTimer] = useState(100); // Время на ход 
+  const [gameState, setGameState] = useState('waiting'); // 'waiting', 'playing', 'result'
   const [result, setResult] = useState('');
   const [chat, setChat] = useState([]);
   const [disabledButtons, setDisabledButtons] = useState(false);
@@ -25,14 +26,13 @@ const Game = () => {
   const messagesRef = useRef(null);
   
   useEffect(() => {
-    // Прокрутка вниз при изменении сообщений
     messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
   }, [chat]);
 
   const startGame = () => {
     setGameState('playing');
-    setTimer(10); // Установите таймер на ваше усмотрение
-    // Другая логика начала игры, например, подключение к сокетам и определение противника
+    setTimer(10); // set
+    // Другая логика начала игры
   };
 
   const endGame = (resultMessage) => {
@@ -45,7 +45,6 @@ const Game = () => {
 
   const makeMove = (playerMove) => {
     // Логика выполнения хода, отправка на сервер, получение результата
-    // Пример упрощенной логики:
     const moves = ['rock', 'paper', 'scissors'];
     const opponentMove = moves[Math.floor(Math.random() * 3)];
     const resultMessage = determineResult(playerMove, opponentMove);
@@ -53,7 +52,7 @@ const Game = () => {
   };
 
   const determineResult = (playerMove, opponentMove) => {
-    // Логика определения результата, например, сравнение ходов
+    // Логика определения результата
     if (playerMove === opponentMove) return 'It\'s a tie!';
     if (
       (playerMove === 'rock' && opponentMove === 'scissors') ||
@@ -75,8 +74,13 @@ const Game = () => {
         <Header />
         <div className='main-container'>
         <div className="game-container">
-            <div className="opponent-name">Opponent: {opponentName}</div>
+            <div className="opponent-name">
+              Opponent: {gameState === 'playing'? opponentName : ''}</div>
             <div className="timer">{timer}s</div>
+
+        {gameState === 'waiting' && (
+        <WaitingMessage />
+      )}
 
       {gameState === 'playing' && (
         <div className="moves">

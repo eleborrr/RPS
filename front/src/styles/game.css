@@ -26,6 +26,10 @@
     align-self: center;
     border-radius: 5px;
   }
+
+  .waiting {
+    color: aliceblue;
+  }
   
   .timer {
     font-size: 20px;
