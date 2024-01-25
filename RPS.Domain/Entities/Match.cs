@@ -1,3 +1,10 @@
 ﻿namespace RPS.Domain.Entities;
 
-public record Match(string Id, string FirstUserId, string SecondUserId, string FirstUserMoveId, string SecondUserMoveId);
+public class Match
+{
+    public string Id { get; set; }
+    public string FirstUserId { get; set; }
+    public string SecondUserId { get; set; }
+    public string FirstUserMoveId { get; set; }
+    public string SecondUserMoveId { get; set; }
+}

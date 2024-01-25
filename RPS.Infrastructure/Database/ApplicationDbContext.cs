@@ -8,6 +8,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
 {
     public DbSet<Message> Messages { get; set; }
     public DbSet<GameRoom> GameRooms { get; set; }
+    public DbSet<Move> Moves { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -39,6 +40,16 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
                 NormalizedUserName = "RAFLOX",
             }
         );
+        
+        builder.Entity<Move>()
+            .HasData(
+                new Move("1", "Rock"));
+        builder.Entity<Move>()
+            .HasData(
+                new Move("2", "Paper"));
+        builder.Entity<Move>()
+            .HasData(
+                new Move("3", "Scissors"));
         
         base.OnModelCreating(builder);
     }
