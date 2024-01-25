@@ -1,6 +1,5 @@
-﻿namespace RPS.Application.Features.Match.MakeMove;
+﻿using RPS.Application.Services.Abstractions.Cqrs.Commands;
 
-public class MakeMoveCommand
-{
-    
-}
+namespace RPS.Application.Features.Match.MakeMove;
+
+public record MakeMoveCommand(string MatchId, string MoveId, string UserId): ICommand;

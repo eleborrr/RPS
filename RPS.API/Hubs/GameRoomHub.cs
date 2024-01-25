@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using RPS.Application.Features.Match.GetMatchResult;
+using RPS.Application.Features.Match.MakeMove;
 using RPS.Domain.Entities;
 using RPS.Infrastructure.Database;
 
@@ -10,11 +13,13 @@ namespace RPS.API.Hubs
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
+        private readonly IMediator _mediator;
 
-        public GameRoomHub(ApplicationDbContext dbContext, UserManager<User> userManager)
+        public GameRoomHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _mediator = mediator;
         }
         
         public async Task GetGroupMessages(string gameRoomId)
@@ -63,15 +68,16 @@ namespace RPS.API.Hubs
             await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
                 message);
         }
-
-        public async Task GetMoveOfPlayer()
+        
+        public async Task MakeMove(string matchId, string moveId, string userId)
         {
-            
+            await _mediator.Send(new MakeMoveCommand(matchId, moveId, userId));
         }
 
-        public async Task SendResultOfGame(string gameRoomId)
+        public async Task SendResultOfGame(string groupName, string matchId)
         {
-            
+            var res = await _mediator.Send(new GetMatchResultQuery(matchId));
+            await Clients.Group(groupName).SendAsync("ReceiveGameResult", res.Value);
         }
 
         public async Task SendCountDownTick(int timer, 
