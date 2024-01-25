@@ -6,5 +6,5 @@ public class Message
     public string SenderId { get; set; } = default!;
     public string Content { get; set; } = default!;
     public DateTime Timestamp { get; set; }
-    public string RoomId { get; set; } = default!;
+    public string GameRoomId { get; set; } = default!;
 }
