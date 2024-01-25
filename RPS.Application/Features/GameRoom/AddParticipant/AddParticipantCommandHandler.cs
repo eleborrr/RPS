@@ -17,10 +17,11 @@ public class AddParticipantCommandHandler: ICommandHandler<AddParticipantCommand
     {
         var gameRoom = await _repositoryManager.GameRoomRepository.GetByGameRoomIdAsync(request.GameRoomId);
 
-        if (gameRoom.Participant1 is null)
-            gameRoom.Participant1 = request.ParticipantId;
-        else if (gameRoom.Participant2 is null)
-            gameRoom.Participant2 = request.ParticipantId;
+        if (gameRoom is null)
+            return new Result(false, $"Room with id {request.GameRoomId} not found!");
+        
+        if (gameRoom.Participant is null)
+            gameRoom.Participant = request.ParticipantId;
         else
             return new Result(false, "Cannot join this game. Lobby is full!");
         await _repositoryManager.GameRoomRepository.UpdateAsync(gameRoom);
