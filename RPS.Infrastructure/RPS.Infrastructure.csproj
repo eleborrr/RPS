@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RPS.Domain\RPS.Domain.csproj" />
+      <ProjectReference Include="..\RPS.Shared\RPS.Shared.csproj" />
     </ItemGroup>
 
 
@@ -22,6 +23,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.15" />
+      <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
     </ItemGroup>
 
 
