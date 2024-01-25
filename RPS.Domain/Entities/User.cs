@@ -1,6 +1,8 @@
-﻿namespace RPS.Domain.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User
+namespace RPS.Domain.Entities;
+
+public class User: IdentityUser
 {
     public string Username { get; set; } = default!;
 }
