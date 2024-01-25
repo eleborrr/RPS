@@ -7,20 +7,26 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MassTransit" Version="7.3.1" />
+        <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.1" />
         <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.15" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.15" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.15" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.15">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="ServicesExtensions\" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\RPS.Application\RPS.Application.csproj" />
       <ProjectReference Include="..\RPS.Domain\RPS.Domain.csproj" />
     </ItemGroup>
+
+
 
 </Project>
