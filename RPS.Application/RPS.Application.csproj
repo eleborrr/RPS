@@ -8,9 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Configs\" />
-      <Folder Include="Features\GameRoom\AddParticipant\" />
-      <Folder Include="Features\GameRoom\CreateNewGameRoom\" />
-      <Folder Include="Features\GameRoom\DeleteGameRoom\" />
       <Folder Include="Features\GameRoom\RemoveParticipant\" />
       <Folder Include="Features\Rating\AddUserInRating\" />
       <Folder Include="Features\Rating\GetRating\" />

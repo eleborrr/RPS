@@ -2,7 +2,7 @@
 
 public interface IRepositoryManager
 {
-    IGameRoomRepository RoomRepository { get; }
+    IGameRoomRepository GameRoomRepository { get; }
     IMessageRepository MessageRepository { get; }
     IMatchRepository MatchRepository { get; }
     IUnitOfWork UnitOfWork { get; }
