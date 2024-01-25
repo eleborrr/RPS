@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   FacebookLoginButton,
   InstagramLoginButton
@@ -30,7 +30,40 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="formCenter">
+    <div className="App">
+        <div className="appAside" />
+        <div className="appForm">
+          <div className="pageSwitcher">
+            <NavLink
+              to="/sign-in" 
+              className="pageSwitcherItem"
+            >
+              Sign In
+            </NavLink>
+            <NavLink
+              to="/sign-up"
+              className="pageSwitcherItem"
+            >
+              Sign Up
+            </NavLink>
+          </div>
+
+          <div className="formTitle">
+            <NavLink
+              to="/sign-in"
+              className="formTitleLink"
+            >
+              Sign In
+            </NavLink>{" "}
+            or{" "}
+            <NavLink
+              to="/sign-up"
+              className="formTitleLink"
+            >
+              Sign Up
+            </NavLink>
+          </div>
+          <div className="formCenter">
       <form className="formFields" onSubmit={handleSubmit}>
         <div className="formField">
           <label className="formFieldLabel" htmlFor="email">
@@ -84,6 +117,10 @@ const SignInForm = () => {
         </div>
       </form>
     </div>
+          
+        </div>
+      </div>
+    
   );
 };
 
