@@ -43,8 +43,7 @@ namespace RPS.API.Hubs
         
         public async Task SendPrivateMessage(string senderUserName, 
             string message,
-            string gameRoomId,
-            string groupName)
+            string gameRoomId)
         {
             var room = _dbContext.GameRooms.FirstOrDefault(r => r.Id == gameRoomId);
             
@@ -65,7 +64,7 @@ namespace RPS.API.Hubs
             _dbContext.Messages.Add(newMessage);
             await _dbContext.SaveChangesAsync();
             
-            await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", senderUserName, 
+            await Clients.Group(gameRoomId).SendAsync("ReceivePrivateMessage", senderUserName, 
                 message);
         }
         

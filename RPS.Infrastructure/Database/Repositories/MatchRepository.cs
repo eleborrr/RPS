@@ -18,7 +18,7 @@ public class MatchRepository: IMatchRepository
         throw new NotImplementedException();
     }
 
-    public Task AddAsync(Match match)
+    public Task<string> AddAsync(Match match)
     {
         throw new NotImplementedException();
     }
