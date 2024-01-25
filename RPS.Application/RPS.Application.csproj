@@ -21,6 +21,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RPS.Domain\RPS.Domain.csproj" />
+      <ProjectReference Include="..\RPS.Infrastructure\RPS.Infrastructure.csproj" />
+      <ProjectReference Include="..\RPS.Shared\RPS.Shared.csproj" />
     </ItemGroup>
 
 </Project>
