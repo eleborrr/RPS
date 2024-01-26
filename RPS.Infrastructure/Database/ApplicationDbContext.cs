@@ -34,17 +34,20 @@ public sealed class ApplicationDbContext: IdentityDbContext<IdentityUser>
             }
         );
 
+
         builder.Entity<GameRoom>().HasData(
             new GameRoom
             {
                 Id = "12",
                 CreationDate = DateTime.Now,
+                ParticipantId = "-1",
                 CreatorId = "2",
                 CreatorConnected = true,
                 EloDelta = 25,
                 IsStarted = false,
                 TimeToMove = 7
             });
+
         
         builder.Entity<IdentityUser>().HasData(
             new IdentityUser

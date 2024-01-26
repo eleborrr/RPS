@@ -1,16 +1,16 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using RPS.Application.Features.GameRoom.AddParticipant;
 using RPS.Application.Features.GameRoom.GetGameRoomInfo;
-using RPS.Application.Features.GameRoom.GetParticipants;
-using RPS.Application.Features.GameRoom.RemoveParticipant;
 using RPS.Application.Features.Match.CreateNewMatch;
 using RPS.Application.Features.Match.MakeMove;
 using RPS.Application.Features.Round.GetRoundResult;
 using RPS.Domain.Entities;
 using RPS.Infrastructure.Database;
+using RPS.Shared.Rating;
 
 namespace RPS.API.Hubs
 {
@@ -19,12 +19,14 @@ namespace RPS.API.Hubs
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMediator _mediator;
+        private readonly IBus _bus;
 
-        public GameRoomHub(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IMediator mediator)
+        public GameRoomHub(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IMediator mediator, IBus bus)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _mediator = mediator;
+            _bus = bus;
         }
         
         public async Task GetGroupMessages(string gameRoomId)
@@ -80,15 +82,23 @@ namespace RPS.API.Hubs
 
         public async Task JoinLobby(string gameRoomId, string userId)
         {
-            await _mediator.Send(new AddParticipantCommand(gameRoomId, userId));
-            await StartRound(gameRoomId);
+            var res = await _mediator.Send(new AddParticipantCommand(gameRoomId, userId));
+            if (res.IsSuccess)
+            {
+                await StartRound(gameRoomId);
+            }
+            //TODO if failure show exception
+            else
+            {
+                Console.WriteLine(res.Error);
+            }
         }
 
         public async Task StartRound(string gameRoomId)
         {
-            //TODO DELETE MOCK
-            var roomInfo = new GameRoomInfoDto("lol", DateTime.Now, "12", "2", "1", true, true);
-            // var roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
+            //MOCK
+            // var roomInfo = new GameRoomInfoDto("lol", DateTime.Now, "12", "2", "1", true, true);
+            var roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
             while (roomInfo.CreatorConnected && roomInfo.ParticipantConnected)
             {
                 var newRoundId = (await _mediator.Send(
@@ -98,14 +108,27 @@ namespace RPS.API.Hubs
                 
                 await SendCountDownTick(7, gameRoomId);
                 await SendResultOfRound(gameRoomId, newRoundId);
+                await SendCountDownTick(3, gameRoomId);
                 // roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
             }
         }
 
         public async Task SendResultOfRound(string gameRoomId, string roundId)
         {
-            var res = await _mediator.Send(new GetRoundResultQuery(roundId));
-            await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.Value);
+            var res = (await _mediator.Send(new GetRoundResultQuery(roundId))).Value;
+            
+            if (res.IsDraw)
+            {
+                await _bus.Publish(new AdjustUserRatingMongoDto() {UserId = res.WinnerId, Adjust = 1});
+                await _bus.Publish(new AdjustUserRatingMongoDto(){UserId = res.LoserId, Adjust = 1});
+            }
+            else
+            {
+                await _bus.Publish(new AdjustUserRatingMongoDto(){UserId = res.LoserId, Adjust = -1});
+                await _bus.Publish(new AdjustUserRatingMongoDto(){UserId = res.WinnerId, Adjust = 3});
+            }
+
+            await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.WinnerId);
         }
 
         public async Task SendCountDownTick(int timer, 

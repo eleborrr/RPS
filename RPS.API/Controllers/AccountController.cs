@@ -1,12 +1,14 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RPS.Application.Dto.Account;
 using RPS.Application.Dto.ResponsesAbstraction;
-using RPS.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using RPS.Application.Services.Abstractions;
+using RPS.Domain.Repositories.Abstractions;
+using RPS.Shared.Rating;
 
 
 namespace RPS.API.Controllers;
@@ -18,11 +20,14 @@ public class AccountController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IServiceManager _serviceManager;
+    private readonly IBus _bus;
+    
     public AccountController(
         IServiceManager serviceManager,
-        UserManager<IdentityUser> userManager)
+        UserManager<IdentityUser> userManager, IBus bus)
     {
         _userManager = userManager;
+        _bus = bus;
         _serviceManager = serviceManager;
     }
 
@@ -54,6 +59,13 @@ public class AccountController : Controller
         
         var b = await _serviceManager.AccountService.EditAccount(user, model, ModelState);
         return Json(b);
+    }
+
+    [HttpPost("/adjust")]
+    public async Task<JsonResult> AdjustRatingTest([FromQuery] string userId, [FromBody] int adjust)
+    {
+        await _bus.Send(new AdjustUserRatingMongoDto(){UserId = userId, Adjust = adjust});
+        return new JsonResult(":D");
     }
     
     [HttpGet("/all")]

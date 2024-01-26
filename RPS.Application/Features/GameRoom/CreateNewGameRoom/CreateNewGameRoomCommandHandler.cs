@@ -1,6 +1,6 @@
-﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using RPS.Application.Dto.MediatR;
+using RPS.Application.Services.Abstractions.Cqrs.Commands;
 using RPS.Domain.Repositories.Abstractions;
 
 namespace RPS.Application.Features.GameRoom.CreateNewGameRoom;
@@ -21,6 +21,8 @@ public class CreateNewGameRoomCommandHandler: ICommandHandler<CreateNewGameRoomC
         var creator = _userManager.Users.FirstOrDefault(u => u.Id == request.CreatorId);
         var res= await _repositoryManager.GameRoomRepository.AddAsync(new Domain.Entities.GameRoom
         {
+            Id = Guid.NewGuid().ToString(),
+            ParticipantId = "-1",
             TimeToMove = request.TimeToMove,
             EloDelta = request.EloDelta,
             CreatorId = request.CreatorId,

@@ -1,0 +1,137 @@
+
+.main-container {
+    margin: 50px;
+    display: flex;
+}
+.game-container {
+    background: blueviolet;
+    border-radius: 20px;
+    padding: 25px 0px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    justify-content: space-between;
+    height: 400px;
+    margin: 50px auto;
+    text-align: center;
+  }
+  
+  .opponent-name {
+    font-size: 20px;
+    background: #51224ab5;
+    color: aliceblue;
+    padding: 5px;
+    width: fit-content;
+    align-self: center;
+    border-radius: 5px;
+  }
+
+  .waiting {
+    color: aliceblue;
+  }
+  
+  .timer {
+    font-size: 20px;
+    margin-bottom: 20px;
+    background: #51224a;
+    padding: 15px;
+    width: 80px;
+    height: 80px;
+    align-self: center;
+    border-radius: 40px;
+    color: aliceblue;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+  }
+  
+  .play-button {
+    width: 100px;
+    margin: 10px auto;
+  }
+
+  .moves {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  
+  .moves button {
+    font-size: 16px;
+    padding: 10px;
+    color: aliceblue;
+    background: #761868;
+    border-radius: 5px;
+    border: 0px;
+    box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+  .moves button:hover {
+    background: #971c85;
+  }
+  
+  .result {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: aliceblue;
+  }
+  
+  .chat {
+    text-align: left;
+    height: 500px;
+    background-color: blueviolet;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+  }
+
+  .chat-input {
+    width: auto;
+    margin: 5px;
+    padding: 5px;
+  }
+  
+  .chat-messages {
+    overflow-wrap: break-word;
+    height: 450px;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: flex;
+    overflow-y: auto;
+    overflow-anchor: auto;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-message {
+    background-color: #51224a;
+    color: aliceblue;
+    padding: 3px 5px;
+    width: fit-content;
+    overflow-wrap: break-word;
+    font-size: 15px;
+    border-radius: 5px;
+  }
+
+  .chat-message-your {
+    background-color: #bd43aa;
+    color: aliceblue;
+    padding: 3px 5px;
+    width: fit-content;
+    overflow-wrap: break-word;
+    font-size: 15px;
+    border-radius: 5px;
+  }
+  
+  .user-name {
+    font-size: 20px;
+    background: #51224ab5;
+    color: aliceblue;
+    padding: 5px;
+    width: fit-content;
+    align-self: center;
+    border-radius: 5px;
+  }
+  

@@ -1,0 +1,23 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["RPS.Mongo/RPS.Mongo.csproj", "RPS.Mongo/"]
+COPY ["RPS.Shared/RPS.Shared.csproj", "RPS.Shared/"]
+COPY ["RPS.Infrastructure/RPS.Infrastructure.csproj", "RPS.Infrastructure/"]
+COPY ["RPS.Domain/RPS.Domain.csproj", "RPS.Domain/"]
+RUN dotnet restore "RPS.Mongo/RPS.Mongo.csproj"
+COPY . .
+WORKDIR "/src/RPS.Mongo"
+RUN dotnet build "RPS.Mongo.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "RPS.Mongo.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "RPS.Mongo.dll"]

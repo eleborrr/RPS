@@ -1,5 +1,5 @@
-﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
-using RPS.Application.Dto.MediatR;
+﻿using RPS.Application.Dto.MediatR;
+using RPS.Application.Services.Abstractions.Cqrs.Commands;
 using RPS.Domain.Repositories.Abstractions;
 
 namespace RPS.Application.Features.GameRoom.AddParticipant;
@@ -20,7 +20,7 @@ public class AddParticipantCommandHandler: ICommandHandler<AddParticipantCommand
         if (gameRoom is null)
             return new Result(false, $"Room with id {request.GameRoomId} not found!");
 
-        if (gameRoom.ParticipantId is null)
+        if (gameRoom.ParticipantId == "-1" || gameRoom.ParticipantId == request.ParticipantId)
         {
             gameRoom.ParticipantConnected = true;
             gameRoom.ParticipantId = request.ParticipantId;

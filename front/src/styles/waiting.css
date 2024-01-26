@@ -1,0 +1,26 @@
+.waiting-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: blueviolet;
+}
+
+.waiting-message span {
+  font-size: 20px;
+  color: aliceblue;
+  background-color: blueviolet;
+  border-radius: 5px;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}

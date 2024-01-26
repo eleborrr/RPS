@@ -25,9 +25,14 @@ public class GameRoomRepository: IGameRoomRepository
         return id.Entity.Id;
     }
 
-    public Task UpdateAsync(GameRoom match)
+    public async Task UpdateAsync(GameRoom room)
     {
-        throw new NotImplementedException();
+        var gameRoomInDb = _dbContext.GameRooms.FirstOrDefault(g => g.Id == room.Id);
+        if (gameRoomInDb is null)
+            return;
+        _dbContext.Entry(gameRoomInDb).CurrentValues.SetValues(room);
+        await _dbContext.SaveChangesAsync();
+        
     }
 
     public async Task<GameRoom?> GetByGameRoomIdAsync(string gameRoomId)

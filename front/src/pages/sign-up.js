@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import Header from '../components/header';
+import axiosInstance from "../components/axios_server";
+import Cookies from "js-cookie";
+
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
-    name: "",
-    hasAgreed: false
+    confirmPassword: ""
   });
 
   const handleChange = (event) => {
@@ -22,27 +25,75 @@ const SignUpForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    
+      axiosInstance
+          .post('/registration', {
+            UserName: formData.username,
+            Password: formData.password,
+            ConfirmPassword: formData.confirmPassword,
+          }).then((res) => {
+        console.log(res.data);
+        if (!res.data.successful){
+          console.log(res.data.message);
+        }
+        else{
+          document.location.replace(`/login`);
+        }
+      });
 
-    console.log("The form was submitted with the following data:");
-    console.log(formData);
   };
 
   return (
+
+    <div className="App">
+        
+        <div className="appAside" />
+        <div className="appForm">
+          <div className="pageSwitcher">
+            <NavLink
+              to="/sign-in" 
+              className="pageSwitcherItem"
+            >
+              Sign In
+            </NavLink>
+            <NavLink
+              to="/sign-up"
+              className="pageSwitcherItem"
+            >
+              Sign Up
+            </NavLink>
+          </div>
+
+          <div className="formTitle">
+            <NavLink
+              to="/sign-in"
+              className="formTitleLink"
+            >
+              Sign In
+            </NavLink>{" "}
+            or{" "}
+            <NavLink
+              to="/sign-up"
+              className="formTitleLink"
+            >
+              Sign Up
+            </NavLink>
+          </div>
     <div className="formCenter">
-      <form onSubmit={handleSubmit} className="formFields">
+      <form className="formFields">
         <div className="formField">
-          <label className="formFieldLabel" htmlFor="name">
-            Full Name
+          <label className="formFieldLabel" htmlFor="username">
+            Username
           </label>
           <input
-            type="text"
-            id="name"
-            className="formFieldInput"
-            placeholder="Enter your full name"
-            name="name"
-            autoComplete="off"
-            value={formData.name}
-            onChange={handleChange}
+              type="username"
+              id="username"
+              className="formFieldInput"
+              placeholder="Enter your username"
+              name="username"
+              autoComplete="off"
+              value={formData.username}
+              onChange={handleChange}
           />
         </div>
         <div className="formField">
@@ -50,51 +101,36 @@ const SignUpForm = () => {
             Password
           </label>
           <input
-            type="password"
-            id="password"
-            className="formFieldInput"
-            placeholder="Enter your password"
-            name="password"
-            autoComplete="off"
-            value={formData.password}
-            onChange={handleChange}
+              type="password"
+              id="password"
+              className="formFieldInput"
+              placeholder="Enter your password"
+              name="password"
+              autoComplete="off"
+              value={formData.password}
+              onChange={handleChange}
           />
         </div>
         <div className="formField">
-          <label className="formFieldLabel" htmlFor="email">
-            E-Mail Address
+          <label className="formFieldLabel" htmlFor="password">
+            Confirm password
           </label>
           <input
-            type="email"
-            id="email"
+            type="password"
+            id="confirmPassword"
             className="formFieldInput"
-            placeholder="Enter your email"
-            name="email"
+            placeholder="Enter your password"
+            name="confirmPassword"
             autoComplete="off"
-            value={formData.email}
+            value={formData.confirmPassword}
             onChange={handleChange}
           />
         </div>
+       
+        
 
         <div className="formField">
-          <label className="formFieldCheckboxLabel">
-            <input
-              className="formFieldCheckbox"
-              type="checkbox"
-              name="hasAgreed"
-              autoComplete="off"
-              checked={formData.hasAgreed}
-              onChange={handleChange}
-            />{" "}
-            I agree all statements in{" "}
-            <a href="null" className="formFieldTermsLink">
-              terms of service
-            </a>
-          </label>
-        </div>
-
-        <div className="formField">
-          <button type="submit" className="formFieldButton">
+          <button type="submit" onClick={handleSubmit} className="formFieldButton">
             Sign Up
           </button>{" "}
           <Link to="/sign-in" className="formFieldLink">
@@ -103,6 +139,9 @@ const SignUpForm = () => {
         </div>
       </form>
     </div>
+    </div>
+      </div>
+    
   );
 };
 

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  FacebookLoginButton,
-  InstagramLoginButton
-} from "react-social-login-buttons";
+import { Link, NavLink } from "react-router-dom";
+import Cookies from 'js-cookie';
+import axiosInstance from "../components/axios_server";
 
 const SignInForm = () => {
+  const [spanClass, setSpanClass] = useState('hide')
+  const [errMessage, setErrMessage] = useState('')
+
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: ""
   });
 
@@ -24,26 +25,73 @@ const SignInForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    console.log("The form was submitted with the following data:");
-    console.log(formData);
+    axiosInstance.post('/login', {
+      userName: formData.username,
+      password: formData.password,
+      rememberMe: true,
+      returnUrl: ""
+    }).then((res) => {
+      console.log(res.data);
+      if (!res.data.successful){
+        setSpanClass('errorMessage');
+        setErrMessage(res.data.message);
+      }
+      else{
+        Cookies.set('token', res.data.message);
+        document.location.replace(`/games`);
+      }
+    }) ;
   };
 
   return (
-    <div className="formCenter">
+    <div className="App">
+        
+        <div className="appAside" />
+        <div className="appForm">
+          <div className="pageSwitcher">
+            <NavLink
+              to="/sign-in" 
+              className="pageSwitcherItem"
+            >
+              Sign In
+            </NavLink>
+            <NavLink
+              to="/sign-up"
+              className="pageSwitcherItem"
+            >
+              Sign Up
+            </NavLink>
+          </div>
+
+          <div className="formTitle">
+            <NavLink
+              to="/sign-in"
+              className="formTitleLink"
+            >
+              Sign In
+            </NavLink>{" "}
+            or{" "}
+            <NavLink
+              to="/sign-up"
+              className="formTitleLink"
+            >
+              Sign Up
+            </NavLink>
+          </div>
+          <div className="formCenter">
       <form className="formFields" onSubmit={handleSubmit}>
         <div className="formField">
-          <label className="formFieldLabel" htmlFor="email">
-            E-Mail Address
+          <label className="formFieldLabel" htmlFor="username">
+            Username
           </label>
           <input
-            type="email"
-            id="email"
+            type="username"
+            id="username"
             className="formFieldInput"
-            placeholder="Enter your email"
-            name="email"
+            placeholder="Enter your username"
+            name="username"
             autoComplete="off"
-            value={formData.email}
+            value={formData.username}
             onChange={handleChange}
           />
         </div>
@@ -63,27 +111,22 @@ const SignInForm = () => {
             onChange={handleChange}
           />
         </div>
-
-        <div className="formField">
-          <button type="submit" className="formFieldButton">
-            Sign In
-          </button>{" "}
-          <Link to="/" className="formFieldLink">
-            Create an account
-          </Link>
-        </div>
-
-        <div className="socialMediaButtons">
-          <div className="facebookButton">
-            <FacebookLoginButton onClick={() => alert("Hello")} />
+        <form>
+          <div className="formField">
+            <button type="submit" onClick={handleSubmit} className="formFieldButton">
+              Sign In
+            </button>{" "}
+            <Link to="/sign-up" className="formFieldLink">
+              Create an account
+            </Link>
           </div>
-
-          <div className="instagramButton">
-            <InstagramLoginButton onClick={() => alert("Hello")} />
-          </div>
-        </div>
+        </form>
       </form>
     </div>
+          
+        </div>
+      </div>
+    
   );
 };
 
