@@ -165,6 +165,7 @@ const Game = () => {
     };
 
     const determineResult = (res) => {
+        console.log(res);
         if(res === uid.current) {
             return "You win"
         }
@@ -174,9 +175,13 @@ const Game = () => {
             return "You lost"
     };
 
-    const handleButtonClick = (move) => {
-        console.log("ASDASD");
-        makeMove(move);
+    const handleButtonClick = (playerMove) => {
+        console.log("IN")
+        try {
+            connection.invoke("MakeMove", matchId, playerMove, uid.current);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const makeMove = (playerMove) => {
@@ -206,24 +211,9 @@ const Game = () => {
 
                     {gameState === 'playing' && (
                         <div className="moves">
-                            <button
-                                onClick={() => makeMove("1")}
-                                disabled={disabledButtons}
-                            >
-                                Rock
-                            </button>
-                            <button
-                                onClick={() => makeMove("2")}
-                                disabled={disabledButtons}
-                            >
-                                Paper
-                            </button>
-                            <button
-                                onClick={() => makeMove('3')}
-                                disabled={disabledButtons}
-                            >
-                                Scissors
-                            </button>
+                            <button name="gameButton" onClick={() => handleButtonClick("1")} >Rock</button>
+                            <button name="gameButton" onClick={() => handleButtonClick("2")} >Paper</button>
+                            <button name="gameButton" onClick={() => handleButtonClick("3")} >Scissors</button>
                         </div>
                     )}
 

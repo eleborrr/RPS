@@ -117,8 +117,6 @@ namespace RPS.API.Hubs
         {
             var res = (await _mediator.Send(new GetRoundResultQuery(roundId))).Value;
             
-            
-            // TESTING WITH MONGO NOT FROM ANOTHER SERVICE
             if (res.IsDraw)
             {
                 await _bus.Publish(new AdjustUserRatingMongoDto() {UserId = res.WinnerId, Adjust = 1});
