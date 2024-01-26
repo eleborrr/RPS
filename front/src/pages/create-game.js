@@ -9,7 +9,7 @@ import Message from '../components/message';
 import Cookies from "js-cookie";
 import ServerURL from '../components/server_url';
 import { jwtDecode } from 'jwt-decode';
-import TokenName from '../components/token-name-const';
+import TokenName from '../components/token-name-const.js';
 
 const CreateGame = () => {
     const token = Cookies.get(TokenName);
@@ -22,14 +22,15 @@ const CreateGame = () => {
     //пшол отсюда
     useEffect(() => {
         if (!token){
-            //navigate("/sign-in");
+            navigate("/sign-in");
         }
     }, [navigate, token])
 
     useEffect(()=> {
         if (token !== undefined && token !== null) {
-        setUid(jwtDecode(token).Id);
-        axiosInstance.get(`account/userinfo?id=${uid}`,
+        const decoded = jwtDecode(token)
+        setUid(`${decoded.Id}`);
+        axiosInstance.get(`/userinfo?id=${uid}`,
         {
             headers:{
                 Authorization: `Bearer ${token}`,
@@ -37,7 +38,6 @@ const CreateGame = () => {
             }
         }).then(response => { 
             setUsername(response.data.UserName)
-            console.log(uid);
         })
         } 
     },[])

@@ -9,13 +9,13 @@ import Message from '../components/message';
 import Cookies from "js-cookie";
 import ServerURL from '../components/server_url';
 import { jwtDecode } from 'jwt-decode';
-import TokenName from '../components/token-name-const';
+import TokenName from '../components/token-name-const.js';
 
 
 const Game = () => {
   const token = Cookies.get(TokenName);
-  const navigate = useNavigate();
   
+  const navigate = useNavigate();
 
   const [uid, setUid] = useState('') 
   const [playerName, setPlayerName] = useState('You');
@@ -44,30 +44,34 @@ const Game = () => {
         }
       })
   }
-
+  
 
   //пшол отсюда
   useEffect(() => {
     if (!token){
-        //navigate("/sign-in");
+        navigate("/sign-in");
     }
   }, [navigate, token])
 
   useEffect(()=> {
     if (token !== undefined && token !== null) {
-      setUid( jwtDecode(token).Id);
-      axiosInstance.get(`account/userinfo?id=${uid}`,
+      const decoded = jwtDecode(token);
+      console.log(token);
+      console.log(decoded);
+      console.log(decoded.Id);
+      setUid(`${decoded.Id}`);
+      console.log(uid);
+      axiosInstance.get(`/userinfo?id=${uid}`,
       {
-         headers:{
-             Authorization: `Bearer ${token}`,
-             Accept : "application/json"
-         }
+          headers:{
+              Authorization: `Bearer ${token}`,
+              Accept : "application/json"
+          }
       }).then(response => { 
         setUsername(response.data.UserName)
       })
     }
-    CheckForCreator(); 
-},[])
+},[ token])
     
   
   useEffect(() => {
