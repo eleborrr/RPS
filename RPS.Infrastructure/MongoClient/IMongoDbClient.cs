@@ -6,7 +6,7 @@ public interface IMongoDbClient
 {
     public Task<List<UserRatingMongoDto>> GetAsync();
 
-    public Task<UserRatingMongoDto> GetAsync(string key);
+    public Task<UserRatingMongoDto?> GetAsync(string key);
 
     public Task CreateAsync(UserRatingMongoDto newMetadata);
 

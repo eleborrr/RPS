@@ -24,7 +24,7 @@ public class MongoDbClient: IMongoDbClient
     public async Task<List<UserRatingMongoDto>> GetAsync() =>
         await _ratingCollection.Find(_ => true).ToListAsync();
 
-    public async Task<UserRatingMongoDto> GetAsync(string key) =>
+    public async Task<UserRatingMongoDto?> GetAsync(string key) =>
         await _ratingCollection.Find(b => b.UserId == key).FirstOrDefaultAsync();
 
     public async Task CreateAsync(UserRatingMongoDto newRating) =>
