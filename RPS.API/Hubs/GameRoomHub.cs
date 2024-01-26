@@ -86,7 +86,9 @@ namespace RPS.API.Hubs
 
         public async Task StartRound(string gameRoomId)
         {
-            var roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
+            //TODO DELETE MOCK
+            var roomInfo = new GameRoomInfoDto("lol", DateTime.Now, "12", "2", "1", true, true);
+            // var roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
             while (roomInfo.CreatorConnected && roomInfo.ParticipantConnected)
             {
                 var newRoundId = (await _mediator.Send(
@@ -96,7 +98,7 @@ namespace RPS.API.Hubs
                 
                 await SendCountDownTick(7, gameRoomId);
                 await SendResultOfRound(gameRoomId, newRoundId);
-                roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
+                // roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
             }
         }
 
