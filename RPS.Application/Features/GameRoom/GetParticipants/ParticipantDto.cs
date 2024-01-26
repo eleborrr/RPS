@@ -1,6 +1,3 @@
 ﻿namespace RPS.Application.Features.GameRoom.GetParticipants;
 
-public class ParticipantDto
-{
-    
-}
+public record ParticipantDto(string UserId);

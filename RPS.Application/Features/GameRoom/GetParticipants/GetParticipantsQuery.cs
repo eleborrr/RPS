@@ -2,7 +2,4 @@
 
 namespace RPS.Application.Features.GameRoom.GetParticipants;
 
-public class GetParticipantsQuery: IQuery<IEnumerable<ParticipantDto>>
-{
-    
-}
+public record GetParticipantsQuery(string GameRoomId): IQuery<IEnumerable<ParticipantDto>>;

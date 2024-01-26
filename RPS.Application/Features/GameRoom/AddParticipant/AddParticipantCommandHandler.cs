@@ -19,9 +19,12 @@ public class AddParticipantCommandHandler: ICommandHandler<AddParticipantCommand
 
         if (gameRoom is null)
             return new Result(false, $"Room with id {request.GameRoomId} not found!");
-        
-        if (gameRoom.Participant is null)
-            gameRoom.Participant = request.ParticipantId;
+
+        if (gameRoom.ParticipantId is null)
+        {
+            gameRoom.ParticipantConnected = true;
+            gameRoom.ParticipantId = request.ParticipantId;
+        }
         else
             return new Result(false, "Cannot join this game. Lobby is full!");
         await _repositoryManager.GameRoomRepository.UpdateAsync(gameRoom);
