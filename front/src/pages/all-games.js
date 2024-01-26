@@ -9,7 +9,7 @@ import Message from '../components/message';
 import Cookies from "js-cookie";
 import ServerURL from '../components/server_url';
 import { jwtDecode } from 'jwt-decode';
-import TokenName from '../components/token-name-const.js';
+import TokenName from '../components/token-name-const';
 import GameItem from '../components/game-item.js'
 
 const AllGames = () => {

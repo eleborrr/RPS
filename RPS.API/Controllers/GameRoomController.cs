@@ -53,7 +53,7 @@ public class GameRoomController : Controller
         //TODO throw 404
         return Json(allRooms.Error);
     }
-
+    
     [HttpPost("/createRoom")]
     public async Task<JsonResult> CreateRoom([FromBody] CreateNewRoomDto dto)
     {

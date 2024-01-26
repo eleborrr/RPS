@@ -1,3 +1,4 @@
+
 const GameItem = ({creatorName, datetime, gameId}) => {
     return (
         <div className="gameContainer">
