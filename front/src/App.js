@@ -2,11 +2,16 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import SignUpForm from "./pages/sign-up";
 import SignInForm from "./pages/sign-in";
-import Game from "./pages/game"
+import Game from "./pages/game";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
+import TokenName from "./components/token-name-const";
 
 import "./App.css";
 
 const App = () => {
+  const token = Cookies.get(TokenName);
+
   return (
     <Router basename="/">
       

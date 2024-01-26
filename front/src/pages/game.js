@@ -1,38 +1,124 @@
-import React, { useState, useEffect, useRef } from 'react';
+import axiosInstance from "../components/axios_server";
+import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
 import '../styles/game.css';
 import Header from '../components/header';
 import WaitingMessage from '../components/waiting-opponent';
+import * as signalR from "@microsoft/signalr";
+import Message from '../components/message';
+import Cookies from "js-cookie";
+import ServerURL from '../components/server_url';
+import { jwtDecode } from 'jwt-decode';
+import TokenName from '../components/token-name-const';
+
 
 const Game = () => {
+  const token = Cookies.get(TokenName);
+  const navigate = useNavigate();
+  const connection = useMemo(() => {
+    return new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/gameRoomHub`).build();
+  }, []);
+
+  const [uid, setUid] = useState('') 
   const [playerName, setPlayerName] = useState('You');
   const [opponentName, setOpponentName] = useState('Sematary');
-  const [timer, setTimer] = useState(100); // Время на ход 
+  const [timer, setTimer] = useState(); // Время на ход 
   const [gameState, setGameState] = useState('waiting'); // 'waiting', 'playing', 'result'
   const [result, setResult] = useState('');
-  const [chat, setChat] = useState([]);
-  const [disabledButtons, setDisabledButtons] = useState(false);
 
-  useEffect(() => {
-    const timerInterval = setInterval(() => {
-      if (timer > 0 && gameState === 'playing') {
-        setTimer((prevTimer) => prevTimer - 1);
-      } else if (timer === 0 && gameState === 'playing') {
-        endGame('Time is up!');
-      }
-    }, 1000);
-    return () => clearInterval(timerInterval);
-  }, [timer, gameState]);
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState([]);
+  const [disabledButtons, setDisabledButtons] = useState(false);
+  const { roomId } = useParams();
+  const [username, setUsername] = useState('');
 
   const messagesRef = useRef(null);
   
+  //пшол отсюда
+  useEffect(() => {
+    if (!token){
+        navigate("/sign-in");
+    }
+  }, [navigate, token])
+
+  useEffect(()=> {
+    if (token !== undefined && token !== null) {
+      setUid( jwtDecode(token).Id);
+      axiosInstance.get(`account/userinfo?id=${uid}`,
+      {
+         headers:{
+             Authorization: `Bearer ${token}`,
+             Accept : "application/json"
+         }
+      }).then(response => { 
+        setUsername(response.data.UserName)
+      })
+    }
+        
+},[])
+
+  
   useEffect(() => {
     messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-  }, [chat]);
+  }, [messages]);
+
+  const handleSend = async (event) => {
+        
+    if (message === "")
+            return;
+
+    await callSendMessageSignalR();
+    setMessage("");
+
+    event.preventDefault();
+}
+
+const callSendMessageSignalR = async () =>{
+  connection.invoke("SendPrivateMessage",
+      username,
+      message,
+      roomId)
+      .catch(function (err) {
+          console.log("error sending message");
+          return console.error(err.toString());
+      });
+}
+
+  const callbackSignalR = useCallback(() => {
+  
+    connection.start().then(res => {
+        connection.invoke("GetGroupMessages", `${roomId}`)
+                .catch(function (err) {
+            return console.error(err.toString());
+        });
+    });
+    
+    connection.on("ReceivePrivateMessage", function (user, message){
+        let newMessage = 
+        {
+            belongsToSender : user === username,
+            message : message,
+            senderName : user
+        };
+        setMessages(prev => [...prev, newMessage])
+    }).catch(function(err){return console.error(err.toString())});
+    return () => {
+      connection.stop()};
+  }, [username])
+  
+  useEffect(() => { 
+      callbackSignalR();
+  }, [callbackSignalR, token])
+
+  useEffect(() => {
+    connection.on("ReceiveTimer", function (timer){
+      setTimer(timer);
+  }).catch(function(err){return console.error(err.toString())});
+  }, [timer, gameState])
 
   const startGame = () => {
     setGameState('playing');
     setTimer(10); // set
-    // Другая логика начала игры
   };
 
   const endGame = (resultMessage) => {
@@ -40,29 +126,30 @@ const Game = () => {
     setResult(resultMessage);
     setTimer(0);
     setDisabledButtons(true);
-    // Другая логика завершения игры
+    // Другая логика завершения игры?
   };
 
   const makeMove = (playerMove) => {
     // Логика выполнения хода, отправка на сервер, получение результата
-    const moves = ['rock', 'paper', 'scissors'];
-    const opponentMove = moves[Math.floor(Math.random() * 3)];
-    const resultMessage = determineResult(playerMove, opponentMove);
+    connection.invoke("MakeMove", roomId, playerMove, uid).catch(function (err) {
+      return console.error(err.toString());
+  });
+  let winner = ''
+  connection.on("ReceiveGameResult", function (res){
+    winner = res.data.WinnerId
+}).catch(function(err){return console.error(err.toString())});
+    const resultMessage = determineResult(result);
     endGame(resultMessage);
   };
 
-  const determineResult = (playerMove, opponentMove) => {
-    // Логика определения результата
-    if (playerMove === opponentMove) return 'It\'s a tie!';
-    if (
-      (playerMove === 'rock' && opponentMove === 'scissors') ||
-      (playerMove === 'paper' && opponentMove === 'rock') ||
-      (playerMove === 'scissors' && opponentMove === 'paper')
-    ) {
-      return 'You win!';
-    } else {
-      return 'You lose!';
+  const determineResult = (res) => {
+    if(res === uid) {
+      return "You win"
     }
+    else if(res === '-1')
+      return "Its tie"
+    else
+      return "You lost"
   };
 
   const handleButtonClick = (move) => {
@@ -85,19 +172,19 @@ const Game = () => {
       {gameState === 'playing' && (
         <div className="moves">
           <button
-            onClick={() => handleButtonClick('rock')}
+            onClick={() => handleButtonClick('1')}
             disabled={disabledButtons}
           >
             Rock
           </button>
           <button
-            onClick={() => handleButtonClick('paper')}
+            onClick={() => handleButtonClick('2')}
             disabled={disabledButtons}
           >
             Paper
           </button>
           <button
-            onClick={() => handleButtonClick('scissors')}
+            onClick={() => handleButtonClick('3')}
             disabled={disabledButtons}
           >
             Scissors
@@ -115,16 +202,21 @@ const Game = () => {
     </div>
     <div className="chat">
         <div className="chat-messages" ref={messagesRef}>
-          {chat.map((message, index) => (
-            <div className='chat-message' key={index}>{message}</div>
+          {messages.map((message, index) => (<Message
+          key={index}
+          senderName={message.senderName}
+          message={message.message}
+          belongsToSender={message.belongsToSender} />
           ))}
         </div>
         <input className='chat-input'   
           type="text"
           placeholder="Type your message..."
+          onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              setChat([...chat, `${playerName}: ${e.target.value}`]);
+              handleSend(e);
+              setMessages([...messages, `${playerName}: ${e.target.value}`]);
               e.target.value = '';
             }
           }}

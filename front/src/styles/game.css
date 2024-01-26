@@ -114,6 +114,16 @@
     font-size: 15px;
     border-radius: 5px;
   }
+
+  .chat-message-your {
+    background-color: #bd43aa;
+    color: aliceblue;
+    padding: 3px 5px;
+    width: fit-content;
+    overflow-wrap: break-word;
+    font-size: 15px;
+    border-radius: 5px;
+  }
   
   .user-name {
     font-size: 20px;
