@@ -56,7 +56,7 @@ const Game = () => {
     }
         
 },[])
-
+    
   
   useEffect(() => {
     messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
@@ -103,54 +103,34 @@ const callSendMessageSignalR = async () =>{
         };
         setMessages(prev => [...prev, newMessage])
     });
+    
+    con.on("GameStarted", function(res){
+          setMatchId(res.data);
+          setGameState('playing');
+    });
+    
+    con.on("PlayerDisconnect", function(){
+          setGameState('waiting');
+      });
+
+    con.on("ReceiveTimer", function (tick){
+          setTimer(tick);});
+
+    let winner = '';
+    con.on("ReceiveGameResult", function (res){
+            winner = res.data
+            const resultMessage = determineResult(winner);
+            endGame(resultMessage);
+    });
+            
     setConnection(con);
-    return () => {
-      con.stop()};
   }, [username])
   
   useEffect(() => { 
       callbackSignalR();
   }, [callbackSignalR, token])
 
-
-  useEffect(() => {
-    console.log('USE EFFECT');
-    if(connection != null){
-      console.log('GAME STARTED FROM USE EFECT')
-    connection.on("GameStarted", function(res){
-      setMatchId(res.data)
-      startGame();
-    })
-  }
-  },[start])
-
-  const startGame = () => {
-    setGameState('playing');
-    console.log("GAME STARTED");
-  };
-
   
-
-  
-  useEffect(() => {
-    if(connection != null) {
-      
-      let winner = ''
-      connection.on("ReceiveGameResult", function (res){
-        winner = res.data.WinnerId
-        const resultMessage = determineResult(winner);
-        endGame(resultMessage);
-    });
-      console.log(winner);
-      connection.on("PlayerDisconnect", function(){
-        setGameState('waiting');
-      });
-      connection.on("ReceiveTimer", function (tick){
-        setTimer(tick);
-    });
-    }
-  }, [timer, gameState])
-
   const endGame = (resultMessage) => {
     setGameState('result');
     setResult(resultMessage);
