@@ -64,7 +64,7 @@ public class AccountController : Controller
     [HttpPost("/adjust")]
     public async Task<JsonResult> AdjustRatingTest([FromQuery] string userId, [FromBody] int adjust)
     {
-        await _bus.Send(new AdjustUserRatingMongoDto(userId, adjust));
+        await _bus.Send(new AdjustUserRatingMongoDto(){UserId = userId, Adjust = adjust});
         return new JsonResult(":D");
     }
     

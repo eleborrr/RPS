@@ -1,12 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using RPS.Domain.Repositories.Abstractions;
+﻿using Microsoft.AspNetCore.Mvc;
 using RPS.Infrastructure.MongoClient;
-using RPS.Shared.Rating;
-using IMediator = MassTransit.Mediator.IMediator;
 
 
 namespace RPS.Mongo.Controllers;

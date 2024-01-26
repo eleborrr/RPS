@@ -16,7 +16,6 @@ const CreateGame = () => {
     const navigate = useNavigate();
     const [uid, setUid] = useState('');
     const [maxRating, setMaxRating] = useState(0);
-    const [username, setUsername] = useState('');
     
 
     //пшол отсюда
@@ -28,17 +27,10 @@ const CreateGame = () => {
 
     useEffect(()=> {
         if (token !== undefined && token !== null) {
-        const decoded = jwtDecode(token)
+        const decoded = jwtDecode(token);
+        console.log(decoded);
+        console.log(decoded.Id);
         setUid(`${decoded.Id}`);
-        axiosInstance.get(`/userinfo?id=${uid}`,
-        {
-            headers:{
-                Authorization: `Bearer ${token}`,
-                Accept : "application/json"
-            }
-        }).then(response => { 
-            setUsername(response.data.UserName)
-        })
         } 
     },[])
 
@@ -49,6 +41,7 @@ const CreateGame = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const decoded = jwtDecode(token)
         console.log(uid);
         axiosInstance.post('/createRoom', roomData).then(res => {
             navigate(`/game/${res.data}`)

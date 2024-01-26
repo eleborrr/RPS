@@ -45,7 +45,7 @@ const AllGames = () => {
                 <h2>Все игровые комнаты</h2>
                 <div className="rooms-container">
                     {rooms.map(room => (
-                        <li onClick={() => navigate(`${room.gameRoomId}`)}>
+                        <li onClick={() => navigate(`/game/${room.gameRoomId}`)}>
                         <div className='content'>
                             <h3>{room.creatorName} {room.datetime}</h3>
                         </div>

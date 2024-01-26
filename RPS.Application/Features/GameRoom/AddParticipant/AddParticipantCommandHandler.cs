@@ -20,7 +20,7 @@ public class AddParticipantCommandHandler: ICommandHandler<AddParticipantCommand
         if (gameRoom is null)
             return new Result(false, $"Room with id {request.GameRoomId} not found!");
 
-        if (gameRoom.ParticipantId is null)
+        if (gameRoom.ParticipantId == "-1" || gameRoom.ParticipantId == request.ParticipantId)
         {
             gameRoom.ParticipantConnected = true;
             gameRoom.ParticipantId = request.ParticipantId;

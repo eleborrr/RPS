@@ -1,10 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using RPS.Application.Dto.Authentication.Login;
-using RPS.Application.Features.GameRoom.GetAllRooms;
-using RPS.Application.Features.GameRoom.GetGameRoomInfo;
-using RPS.Application.Features.Rating.GetUsersRating;
 using RPS.Application.Services.Abstractions;
 using RPS.Domain.Entities;
 

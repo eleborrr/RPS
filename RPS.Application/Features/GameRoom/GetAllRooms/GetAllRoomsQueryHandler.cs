@@ -24,14 +24,25 @@ public class GetAllRoomsQueryHandler : IQueryHandler<GetAllRoomsQuery, List<GetA
             return new Result<List<GetAllRoomsDto>>(null, false, "there are no rooms at the moment");
         }
 
-        var roomTasks = rooms.Select(async r =>
+        var result = new List<GetAllRoomsDto>();
+        foreach (var room in rooms)
         {
-            var creator = await _userManager.FindByIdAsync(r.CreatorId);
-            return new GetAllRoomsDto(creator.UserName, r.CreationDate, r.Id);
-        });
+            var users = _userManager.Users.ToList();
+            var creator = await _userManager.FindByIdAsync(room.CreatorId);
+            if (creator != null)
+                result.Add(new GetAllRoomsDto(creator.UserName, room.CreationDate, room.Id));
+        }
+        
+        // var roomTasks = rooms
+        //     .Where(r => r.CreatorId != "")
+        //     .Select(async r =>
+        // {
+        //     var creator = await _userManager.FindByIdAsync(r.CreatorId);
+        //     return new GetAllRoomsDto(creator.UserName, r.CreationDate, r.Id);
+        // });
+        //
+        // var dtos = await Task.WhenAll(roomTasks);
 
-        var dtos = await Task.WhenAll(roomTasks);
-
-        return new Result<List<GetAllRoomsDto>>(dtos.ToList(), true);
+        return new Result<List<GetAllRoomsDto>>(result, true);
     }
 }

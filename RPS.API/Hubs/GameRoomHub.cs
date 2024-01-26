@@ -21,11 +21,12 @@ namespace RPS.API.Hubs
         private readonly IMediator _mediator;
         private readonly IBus _bus;
 
-        public GameRoomHub(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IMediator mediator)
+        public GameRoomHub(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IMediator mediator, IBus bus)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _mediator = mediator;
+            _bus = bus;
         }
         
         public async Task GetGroupMessages(string gameRoomId)
@@ -81,8 +82,16 @@ namespace RPS.API.Hubs
 
         public async Task JoinLobby(string gameRoomId, string userId)
         {
-            await _mediator.Send(new AddParticipantCommand(gameRoomId, userId));
-            await StartRound(gameRoomId);
+            var res = await _mediator.Send(new AddParticipantCommand(gameRoomId, userId));
+            if (res.IsSuccess)
+            {
+                await StartRound(gameRoomId);
+            }
+            //TODO if failure show exception
+            else
+            {
+                Console.WriteLine(res.Error);
+            }
         }
 
         public async Task StartRound(string gameRoomId)
@@ -112,13 +121,13 @@ namespace RPS.API.Hubs
             // TESTING WITH MONGO NOT FROM ANOTHER SERVICE
             if (res.IsDraw)
             {
-                await _bus.Send(new AdjustUserRatingMongoDto(res.WinnerId, 1));
-                await _bus.Send(new AdjustUserRatingMongoDto(res.LoserId, 1));
+                await _bus.Publish(new AdjustUserRatingMongoDto() {UserId = res.WinnerId, Adjust = 1});
+                await _bus.Publish(new AdjustUserRatingMongoDto(){UserId = res.LoserId, Adjust = 1});
             }
             else
             {
-                await _bus.Send(new AdjustUserRatingMongoDto(res.LoserId, -1));
-                await _bus.Send(new AdjustUserRatingMongoDto(res.WinnerId, 3));
+                await _bus.Publish(new AdjustUserRatingMongoDto(){UserId = res.LoserId, Adjust = -1});
+                await _bus.Publish(new AdjustUserRatingMongoDto(){UserId = res.WinnerId, Adjust = 3});
             }
 
             await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.WinnerId);

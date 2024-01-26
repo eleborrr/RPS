@@ -27,6 +27,12 @@ public class GetRoundResultQueryHandler: IQueryHandler<GetRoundResultQuery, Roun
 
         if (match.FirstUserMoveId == match.SecondUserMoveId)
             return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId, match.SecondUserId, true), true);
+
+        if (match.FirstUserMoveId == "" || match.FirstUserMoveId == null)
+            return new Result<RoundResultDto>(new RoundResultDto(match.SecondUserId, match.FirstUserId, false), true);
+        
+        if (match.SecondUserMoveId == "" || match.SecondUserMoveId == null)
+            return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId, match.SecondUserId, false), true);
         
         switch (match)
         {

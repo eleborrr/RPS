@@ -1,10 +1,11 @@
 ﻿using MassTransit;
 using RPS.Mongo.Services.Rating;
 using RPS.Shared.Configs;
+using RPS.Shared.Rating;
 
 namespace RPS.Mongo.ServicesExtensions.RabbitMq;
 
-public static class ServiceCollectionExtensions
+public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddMasstransitRabbitMq(this IServiceCollection services,
         IConfiguration configuration)

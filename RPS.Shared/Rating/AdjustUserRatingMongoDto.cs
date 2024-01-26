@@ -1,3 +1,7 @@
 ﻿namespace RPS.Shared.Rating;
 
-public record AdjustUserRatingMongoDto(string userId, int adjust);
+public class AdjustUserRatingMongoDto
+{
+    public string UserId { get; set; }
+    public int Adjust { get; set; }
+};

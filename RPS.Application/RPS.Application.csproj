@@ -8,8 +8,6 @@
 
     <ItemGroup>
       <Folder Include="Configs\" />
-      <Folder Include="Features\Rating\AddUserInRating\" />
-      <Folder Include="Features\Rating\UpdateUserRating\" />
     </ItemGroup>
 
     <ItemGroup>

@@ -61,4 +61,11 @@ services:
       - '27017:27017'
     volumes:
       - ./mongo-data:/data/db
+  react:
+    image: front
+    build:
+      context: /front
+      dockerfile: DockerFile
+    ports:
+      - "3000:3000"
   

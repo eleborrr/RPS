@@ -16,15 +16,16 @@ public class RatingConsumer: IConsumer<AdjustUserRatingMongoDto>
 
     public async Task Consume(ConsumeContext<AdjustUserRatingMongoDto> context)
     {
-        var ratingInMongo = await _mongoDbClient.GetAsync(context.Message.userId);
+        Console.WriteLine("asd");
+        var ratingInMongo = await _mongoDbClient.GetAsync(context.Message.UserId);
         if (ratingInMongo is null)
             await _mongoDbClient.CreateAsync(new UserRatingMongoDto 
-                {UserId = context.Message.userId, Rating = context.Message.adjust});
+                {UserId = context.Message.UserId, Rating = context.Message.Adjust});
         else
         {
-            await _mongoDbClient.UpdateAsync(context.Message.userId,
+            await _mongoDbClient.UpdateAsync(context.Message.UserId,
                 new UserRatingMongoDto
-                    { UserId = ratingInMongo.UserId, Rating = ratingInMongo.Rating + context.Message.adjust });
+                    {Id = ratingInMongo.Id, UserId = ratingInMongo.UserId, Rating = ratingInMongo.Rating + context.Message.Adjust });
         }
     }
 }

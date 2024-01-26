@@ -4,8 +4,9 @@ const Header = () => {
   return (
     <header style={headerStyle}>
       <div>
-        <button style={buttonStyle}>Все игры</button>
-        <button style={buttonStyle}>Рейтинг</button>
+        <a style={buttonStyle} href="/games">Все игры</a>
+        <a style={buttonStyle} href="/ratings">Рейтинг</a>
+        <a style={buttonStyle} href="/add_game">Создать комнату</a>
       </div>
     </header>
   );

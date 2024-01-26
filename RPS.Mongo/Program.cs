@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Configuration.AddEnvironmentVariables();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -70,12 +71,6 @@ app.MapGet("api/ratings", async ([FromServices] RatingGetterService storageServi
     return allRatings is not null
         ? Results.Ok(allRatings.OrderBy(r => r.Rating))
         : Results.NotFound();
-});
-
-app.MapGet("api/addrating", async ([FromServices] IMongoDbClient mongoDbClient) =>
-{
-    await mongoDbClient.CreateAsync(new UserRatingMongoDto(){UserId = "2", Rating = 150});
-    return Results.Ok();
 });
 
 app.MapControllers();
