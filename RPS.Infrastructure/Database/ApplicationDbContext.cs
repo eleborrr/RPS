@@ -42,7 +42,6 @@ public sealed class ApplicationDbContext: IdentityDbContext<IdentityUser>
                 CreationDate = DateTime.Now,
                 ParticipantId = "-1",
                 CreatorId = "2",
-                ParticipantId = "1",
                 CreatorConnected = true,
                 EloDelta = 25,
                 IsStarted = false,

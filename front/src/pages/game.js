@@ -71,7 +71,8 @@ const Game = () => {
         setUsername(response.data.UserName)
       })
     }
-},[ token])
+},
+      [ token]);
     
   
   useEffect(() => {
