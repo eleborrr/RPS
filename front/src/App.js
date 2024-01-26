@@ -22,7 +22,6 @@ const App = () => {
             <Route path='/games' element={<AllGames />}/>
             <Route path="/sign-up" element={<SignUpForm />} />
             <Route path="/sign-in" element={<SignInForm />} />
-            <Route path="/all" element={<AllGames />} />
             <Route path="/create" element={<CreateGame />} />
           </Routes>
     </Router>

@@ -39,7 +39,7 @@ const CreateGame = () => {
                     Accept : "application/json"
                 }
             }).then(response => { 
-            setUsername(response.data.UserName)
+            setUsername(response.data.userName)
         })
         } 
     },[])

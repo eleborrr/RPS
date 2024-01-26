@@ -32,6 +32,7 @@ const Game = () => {
   const [matchId, setMatchId] = useState('');
   const [username, setUsername] = useState('');
   const [joinButtonHidden, setJoinButtonHidden] = useState(true);
+  const [opponentConnected, setOpponentConnected] = useState(false);
 
 
 
@@ -42,6 +43,9 @@ const Game = () => {
         if(res.data.creatorId != uid.current){
           setJoinButtonHidden(false);
         }
+        setOpponentConnected(res.data.participantConnected);
+        console.log(opponentConnected);
+        console.log(res.data.participantConnected);
       })
   }
   
@@ -64,7 +68,7 @@ const Game = () => {
               Accept : "application/json"
           }
       }).then(response => { 
-        setUsername(response.data.UserName)
+        setUsername(response.data.userName)
       })
     }
     CheckForCreator();
@@ -87,6 +91,7 @@ const Game = () => {
 }
 
 const callSendMessageSignalR = async () =>{
+  
   connection.invoke("SendPrivateMessage",
       username,
       message,
@@ -95,6 +100,7 @@ const callSendMessageSignalR = async () =>{
           console.log("error sending message");
           return console.error(err.toString());
       });
+      console.log("sending");
 }
 
   const callbackSignalR = useCallback(() => {
@@ -107,15 +113,7 @@ const callSendMessageSignalR = async () =>{
         });
     });
     
-    con.on("ReceivePrivateMessage", function (user, message){
-        let newMessage = 
-        {
-            belongsToSender : user === username,
-            message : message,
-            senderName : user
-        };
-        setMessages(prev => [...prev, newMessage])
-    });
+    
     
     con.on("GameStarted", function(res){
           setMatchId(res.data);
@@ -135,12 +133,26 @@ const callSendMessageSignalR = async () =>{
             const resultMessage = determineResult(winner);
             endGame(resultMessage);
     });
+
+
             
     setConnection(con);
   }, [username])
   
   useEffect(() => { 
       callbackSignalR();
+      if(connection != null){
+        connection.on("ReceivePrivateMessage", function (user, message){
+          let newMessage = 
+          {
+              belongsToSender : user === username,
+              message : message,
+              senderName : user
+          };
+          setMessages(prev => [...prev, newMessage])
+      });
+      }
+      
   }, [callbackSignalR, token])
 
   
@@ -176,7 +188,7 @@ const callSendMessageSignalR = async () =>{
         <Header />
         <div className='main-container'>
           <button
-          hidden={joinButtonHidden}
+          hidden={joinButtonHidden || opponentConnected}
           onClick={() => {
             connection.invoke("JoinLobby", roomId, uid.current);
             setStart('start');
@@ -230,17 +242,19 @@ const callSendMessageSignalR = async () =>{
           belongsToSender={message.belongsToSender} />
           ))}
         </div>
-        <input className='chat-input'   
+        <div><input className='chat-input'   
           type="text"
           placeholder="Type your message..."
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              e.preventDefault();
               handleSend(e);
               e.target.value = '';
             }
           }}
         />
+        </div>
       </div>
       </div>
     </>

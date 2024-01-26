@@ -37,7 +37,7 @@ const SignUpForm = () => {
           console.log(res.data.message);
         }
         else{
-          document.location.replace(`/login`);
+          document.location.replace(`/sign-in`);
         }
       });
 
