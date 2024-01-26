@@ -98,6 +98,7 @@ namespace RPS.API.Hubs
                 
                 await SendCountDownTick(7, gameRoomId);
                 await SendResultOfRound(gameRoomId, newRoundId);
+                await SendCountDownTick(3, gameRoomId);
                 // roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
             }
         }
