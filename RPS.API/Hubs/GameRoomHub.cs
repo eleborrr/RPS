@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using RPS.Application.Features.Match.GetMatchResult;
+using RPS.Application.Features.GameRoom.AddParticipant;
 using RPS.Application.Features.Match.MakeMove;
+using RPS.Application.Features.Round.GetRoundResult;
 using RPS.Domain.Entities;
 using RPS.Infrastructure.Database;
 
@@ -68,23 +69,30 @@ namespace RPS.API.Hubs
                 message);
         }
         
-        public async Task MakeMove(string matchId, string moveId, string userId)
+        public async Task MakeMove(string roundId, string moveId, string userId)
         {
-            await _mediator.Send(new MakeMoveCommand(matchId, moveId, userId));
+            await _mediator.Send(new MakeMoveCommand(roundId, moveId, userId));
         }
 
-        public async Task SendResultOfGame(string groupName, string matchId)
+        public async Task JoinLobby(string gameRoomId, string userId)
         {
-            var res = await _mediator.Send(new GetMatchResultQuery(matchId));
-            await Clients.Group(groupName).SendAsync("ReceiveGameResult", res.Value);
+            await _mediator.Send(new AddParticipantCommand(gameRoomId, userId));
+            await SendCountDownTick(7, gameRoomId);
+            await Clients.Group(gameRoomId).SendAsync("GameStarted", true);
+        }
+
+        public async Task SendResultOfRound(string gameRoomId, string matchId)
+        {
+            var res = await _mediator.Send(new GetRoundResultQuery(matchId));
+            await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.Value);
         }
 
         public async Task SendCountDownTick(int timer, 
-            string groupName)
+            string gameRoomId)
         {
             while (timer > 0)
             {
-                await Clients.Group(groupName).SendAsync("ReceivePrivateMessage", timer);
+                await Clients.Group(gameRoomId).SendAsync("ReceivePrivateMessage", timer);
                 timer--;
                 Thread.Sleep(1000);
             }
