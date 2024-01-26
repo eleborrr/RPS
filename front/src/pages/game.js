@@ -15,21 +15,20 @@ import TokenName from '../components/token-name-const';
 const Game = () => {
   const token = Cookies.get(TokenName);
   const navigate = useNavigate();
-  const connection = useMemo(() => {
-    return new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/gameRoomHub`).build();
-  }, []);
+  
 
   const [uid, setUid] = useState('') 
   const [playerName, setPlayerName] = useState('You');
   const [opponentName, setOpponentName] = useState('Sematary');
-  const [timer, setTimer] = useState(); // Время на ход 
+  const [timer, setTimer] = useState(7); // Время на ход 
   const [gameState, setGameState] = useState('waiting'); // 'waiting', 'playing', 'result'
   const [result, setResult] = useState('');
-
+  const [connection, setConnection] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState([]);
   const [disabledButtons, setDisabledButtons] = useState(false);
   const { roomId } = useParams();
+  const [matchId, setMatchId] = useState('');
   const [username, setUsername] = useState('');
 
   const messagesRef = useRef(null);
@@ -37,7 +36,7 @@ const Game = () => {
   //пшол отсюда
   useEffect(() => {
     if (!token){
-        navigate("/sign-in");
+        //navigate("/sign-in");
     }
   }, [navigate, token])
 
@@ -85,15 +84,16 @@ const callSendMessageSignalR = async () =>{
 }
 
   const callbackSignalR = useCallback(() => {
+    let con = new signalR.HubConnectionBuilder().withUrl(`${ServerURL}/gameRoomHub`).build();
   
-    connection.start().then(res => {
-        connection.invoke("GetGroupMessages", `${roomId}`)
+    con.start().then(res => {
+        con.invoke("GetGroupMessages", `${roomId}`)
                 .catch(function (err) {
             return console.error(err.toString());
         });
     });
     
-    connection.on("ReceivePrivateMessage", function (user, message){
+    con.on("ReceivePrivateMessage", function (user, message){
         let newMessage = 
         {
             belongsToSender : user === username,
@@ -101,25 +101,50 @@ const callSendMessageSignalR = async () =>{
             senderName : user
         };
         setMessages(prev => [...prev, newMessage])
-    }).catch(function(err){return console.error(err.toString())});
+    });
+    setConnection(con);
     return () => {
-      connection.stop()};
+      con.stop()};
   }, [username])
   
   useEffect(() => { 
       callbackSignalR();
   }, [callbackSignalR, token])
 
-  useEffect(() => {
-    connection.on("ReceiveTimer", function (timer){
-      setTimer(timer);
-  }).catch(function(err){return console.error(err.toString())});
-  }, [timer, gameState])
 
+  useEffect(() => {
+    if(connection != null){
+    connection.on("GameStarted", function(res){
+      setMatchId(res.data.MatchId)
+      startGame();
+    })
+  }
+  },)
   const startGame = () => {
     setGameState('playing');
-    setTimer(10); // set
   };
+
+  
+
+  
+  useEffect(() => {
+    if(connection != null) {
+      
+      let winner = ''
+      connection.on("ReceiveGameResult", function (res){
+        winner = res.data.WinnerId
+        const resultMessage = determineResult(winner);
+        endGame(resultMessage);
+    });
+      console.log(winner);
+      connection.on("PlayerDisconnect", function(){
+        setGameState('waiting');
+      });
+      connection.on("ReceiveTimer", function (tick){
+        setTimer(tick);
+    });
+    }
+  }, [timer, gameState])
 
   const endGame = (resultMessage) => {
     setGameState('result');
@@ -127,19 +152,6 @@ const callSendMessageSignalR = async () =>{
     setTimer(0);
     setDisabledButtons(true);
     // Другая логика завершения игры?
-  };
-
-  const makeMove = (playerMove) => {
-    // Логика выполнения хода, отправка на сервер, получение результата
-    connection.invoke("MakeMove", roomId, playerMove, uid).catch(function (err) {
-      return console.error(err.toString());
-  });
-  let winner = ''
-  connection.on("ReceiveGameResult", function (res){
-    winner = res.data.WinnerId
-}).catch(function(err){return console.error(err.toString())});
-    const resultMessage = determineResult(result);
-    endGame(resultMessage);
   };
 
   const determineResult = (res) => {
@@ -156,14 +168,23 @@ const callSendMessageSignalR = async () =>{
     makeMove(move);
   };
 
+  const makeMove = (playerMove) => {
+    // Логика выполнения хода, отправка на сервер, получение результата
+    connection.invoke("MakeMove", matchId, playerMove, uid);
+  };
+
   return (
     <>
         <Header />
         <div className='main-container'>
+          <button
+          onClick={() => {
+            connection.invoke("JoinLobby", roomId, uid);
+          }}>Join</button>
         <div className="game-container">
             <div className="opponent-name">
               Opponent: {gameState === 'playing'? opponentName : ''}</div>
-            <div className="timer">{timer}s</div>
+            <div className="timer">{gameState === 'result' ? 0 :timer}s</div>
 
         {gameState === 'waiting' && (
         <WaitingMessage />
@@ -216,7 +237,6 @@ const callSendMessageSignalR = async () =>{
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               handleSend(e);
-              setMessages([...messages, `${playerName}: ${e.target.value}`]);
               e.target.value = '';
             }
           }}
