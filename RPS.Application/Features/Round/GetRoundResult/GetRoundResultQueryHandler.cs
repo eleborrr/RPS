@@ -21,7 +21,7 @@ public class GetRoundResultQueryHandler: IQueryHandler<GetRoundResultQuery, Roun
 
     public async Task<Result<RoundResultDto>> Handle(GetRoundResultQuery request, CancellationToken cancellationToken)
     {
-        var match = await _repositoryManager.MatchRepository.GetByMatchIdAsync(request.MatchId);
+        var match = await _repositoryManager.RoundRepository.GetByRoundIdAsync(request.MatchId);
         
         if (match is null)
             return new Result<RoundResultDto>(null, false, $"Match with id {request.MatchId} not exists");

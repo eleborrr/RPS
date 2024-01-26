@@ -15,7 +15,7 @@ public class CreateNewMatchCommandHandler: ICommandHandler<CreateNewMatchCommand
 
     public async Task<Result<string>> Handle(CreateNewMatchCommand request, CancellationToken cancellationToken)
     {
-        var id = await _repositoryManager.MatchRepository.AddAsync(new Domain.Entities.Match
+        var id = await _repositoryManager.RoundRepository.AddAsync(new Domain.Entities.Round
         {
             Id = Guid.NewGuid().ToString(),
             FirstUserId = request.FirstUserId,
