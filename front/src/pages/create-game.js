@@ -14,7 +14,7 @@ import TokenName from '../components/token-name-const.js';
 const CreateGame = () => {
     const token = Cookies.get(TokenName);
     const navigate = useNavigate();
-    const [uid, setUid] = useState('');
+    const uid = useRef();
     const [maxRating, setMaxRating] = useState(0);
     const [username, setUsername] = useState('');
     
@@ -28,15 +28,17 @@ const CreateGame = () => {
 
     useEffect(()=> {
         if (token !== undefined && token !== null) {
-        const decoded = jwtDecode(token)
-        setUid(`${decoded.Id}`);
-        axiosInstance.get(`/userinfo?id=${uid}`,
-        {
-            headers:{
-                Authorization: `Bearer ${token}`,
-                Accept : "application/json"
-            }
-        }).then(response => { 
+            const decoded = jwtDecode(token);
+            console.log(`VOT ${decoded.Id}`)
+            uid.current = decoded.Id;
+            console.log(uid.current);
+            axiosInstance.get(`/userinfo?id=${uid}`,
+            {
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                    Accept : "application/json"
+                }
+            }).then(response => { 
             setUsername(response.data.UserName)
         })
         } 
@@ -44,12 +46,13 @@ const CreateGame = () => {
 
     const roomData = {
         maxRating: maxRating, 
-        userId: uid, 
+        userId: uid.current, 
       };
 
     const handleSubmit = (e) => {
+
         e.preventDefault();
-        console.log(uid);
+
         axiosInstance.post('/createRoom', roomData).then(res => {
             navigate(`/game/${res.data}`)
         }) 

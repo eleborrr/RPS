@@ -17,7 +17,7 @@ const Game = () => {
   
   const navigate = useNavigate();
 
-  const [uid, setUid] = useState('') 
+  const uid = useRef();
   const [playerName, setPlayerName] = useState('You');
   const [opponentName, setOpponentName] = useState('Sematary');
   const [timer, setTimer] = useState(7); // Время на ход 
@@ -39,7 +39,7 @@ const Game = () => {
   
   const CheckForCreator = () => {
       axiosInstance.get(`/gameroom_info?id=${roomId}`).then(res => {
-        if(res.data.creatorid != uid){
+        if(res.data.creatorId != uid.current){
           setJoinButtonHidden(false);
         }
       })
@@ -56,12 +56,8 @@ const Game = () => {
   useEffect(()=> {
     if (token !== undefined && token !== null) {
       const decoded = jwtDecode(token);
-      console.log(token);
-      console.log(decoded);
-      console.log(decoded.Id);
-      setUid(`${decoded.Id}`);
-      console.log(uid);
-      axiosInstance.get(`/userinfo?id=${uid}`,
+      uid.current = decoded.Id;
+      axiosInstance.get(`/userinfo?id=${uid.current}`,
       {
           headers:{
               Authorization: `Bearer ${token}`,
@@ -71,7 +67,8 @@ const Game = () => {
         setUsername(response.data.UserName)
       })
     }
-},[ token])
+    CheckForCreator();
+},[])
     
   
   useEffect(() => {
@@ -156,7 +153,7 @@ const callSendMessageSignalR = async () =>{
   };
 
   const determineResult = (res) => {
-    if(res === uid) {
+    if(res === uid.current) {
       return "You win"
     }
     else if(res === '-1')
@@ -171,7 +168,7 @@ const callSendMessageSignalR = async () =>{
 
   const makeMove = (playerMove) => {
     // Логика выполнения хода, отправка на сервер, получение результата
-    connection.invoke("MakeMove", matchId, playerMove, uid);
+    connection.invoke("MakeMove", matchId, playerMove, uid.current);
   };
 
   return (
@@ -181,7 +178,7 @@ const callSendMessageSignalR = async () =>{
           <button
           hidden={joinButtonHidden}
           onClick={() => {
-            connection.invoke("JoinLobby", roomId, uid);
+            connection.invoke("JoinLobby", roomId, uid.current);
             setStart('start');
           }}>Join</button>
         <div className="game-container">

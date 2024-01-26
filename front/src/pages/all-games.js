@@ -15,12 +15,12 @@ import GameItem from '../components/game-item.js'
 const AllGames = () => {
     const token = Cookies.get(TokenName);
     const navigate = useNavigate();
-    const [uid, setUid] = useState('') 
+    let uid = '';
     const [rooms, setRooms] = useState([]);
     
     useEffect(() => {
         if (!token){
-            //navigate("/login");
+            navigate("/sign-in");
         }
     }, [navigate, token])
 
