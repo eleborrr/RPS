@@ -1,6 +1,6 @@
 ﻿namespace RPS.Domain.Entities;
 
-public class Match
+public class Round
 {
     public string Id { get; set; } = default!;
     public string FirstUserId { get; set; } = default!;

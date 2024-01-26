@@ -10,6 +10,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<IdentityUser>
     public DbSet<Message> Messages { get; set; }
     public DbSet<GameRoom> GameRooms { get; set; }
     public DbSet<Move> Moves { get; set; }
+    public DbSet<Round> Rounds { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

@@ -4,6 +4,6 @@ public interface IRepositoryManager
 {
     IGameRoomRepository GameRoomRepository { get; }
     IMessageRepository MessageRepository { get; }
-    IMatchRepository MatchRepository { get; }
+    IRoundRepository RoundRepository { get; }
     IUnitOfWork UnitOfWork { get; }
 }
