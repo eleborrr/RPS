@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace RPS.API.Hubs
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IMediator _mediator;
+        private readonly IBus _bus;
 
         public GameRoomHub(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IMediator mediator)
         {
@@ -88,9 +90,9 @@ namespace RPS.API.Hubs
 
         public async Task StartRound(string gameRoomId)
         {
-            //TODO DELETE MOCK
-            var roomInfo = new GameRoomInfoDto("lol", DateTime.Now, "12", "2", "1", true, true);
-            // var roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
+            //MOCK
+            // var roomInfo = new GameRoomInfoDto("lol", DateTime.Now, "12", "2", "1", true, true);
+            var roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
             while (roomInfo.CreatorConnected && roomInfo.ParticipantConnected)
             {
                 var newRoundId = (await _mediator.Send(
@@ -107,9 +109,20 @@ namespace RPS.API.Hubs
 
         public async Task SendResultOfRound(string gameRoomId, string roundId)
         {
-            var res = await _mediator.Send(new GetRoundResultQuery(roundId));
-            _mediator.Send(new SaveUserRatingMongoCommand(new UserRatingMongoDto()));
-            await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.Value);
+            var res = (await _mediator.Send(new GetRoundResultQuery(roundId))).Value;
+            
+            if (res.IsDraw)
+            {
+                await _bus.Send(new AdjustUserRatingMongoDto(res.WinnerId, 1));
+                await _bus.Send(new AdjustUserRatingMongoDto(res.LoserId, 1));
+            }
+            else
+            {
+                await _bus.Send(new AdjustUserRatingMongoDto(res.LoserId, -1));
+                await _bus.Send(new AdjustUserRatingMongoDto(res.WinnerId, 3));
+            }
+
+            await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.WinnerId);
         }
 
         public async Task SendCountDownTick(int timer, 

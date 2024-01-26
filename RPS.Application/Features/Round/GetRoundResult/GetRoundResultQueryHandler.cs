@@ -1,10 +1,9 @@
 ﻿using RPS.Application.Dto.MediatR;
-using RPS.Application.Features.Round.GetRoundResult;
 using RPS.Application.Services.Abstractions;
 using RPS.Application.Services.Abstractions.Cqrs.Queries;
 using RPS.Domain.Repositories.Abstractions;
 
-namespace RPS.Application.Features.Match.GetMatchResult;
+namespace RPS.Application.Features.Round.GetRoundResult;
 
 public class GetRoundResultQueryHandler: IQueryHandler<GetRoundResultQuery, RoundResultDto>
 {
