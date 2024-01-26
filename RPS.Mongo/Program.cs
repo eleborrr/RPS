@@ -62,6 +62,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors(testSpesific);
+
 app.MapGet("api/ratings", async ([FromServices] RatingGetterService storageService) =>
 {
     var allRatings = await storageService.GetRatings();
