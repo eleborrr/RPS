@@ -4,6 +4,8 @@ using RPS.API.ServicesExtensions.Identity;
 using RPS.API.ServicesExtensions.MassTransit;
 using RPS.API.ServicesExtensions.SecurityAndCors;
 using RPS.API.ServicesExtensions.Services;
+using RPS.API.ServicesExtensions.ServicesPipeline.MediatR;
+using RPS.API.ServicesExtensions.ServicesPipeline.MongoDB;
 using RPS.API.ServicesExtensions.Swagger;
 
 namespace RPS.API.ServicesExtensions.ServicesPipeline;
@@ -15,11 +17,14 @@ public static class ServicesCollectionExtension
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddMvc();
         services.AddCustomCors("testSpecific");
         services.AddCustomAuth(configuration);
         services.AddCustomServices(configuration);
         services.AddMsSql(configuration);
         services.AddSignalR();
+        services.AddMediatR();
+        services.AddMongo(configuration);
         services.AddIdentity();
         services.AddMasstransitRabbitMq(configuration);
         services.AddCustomSwaggerGenerator();

@@ -10,7 +10,7 @@ public static class ServicesExtension
     {
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("BeaverTinderDatabase"));
+            options.UseSqlServer(configuration.GetConnectionString("RPSDatabase"));
             options.EnableSensitiveDataLogging();
         });
         return services;

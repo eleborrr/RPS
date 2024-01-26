@@ -29,4 +29,16 @@
 
 
 
+    <ItemGroup>
+      <Reference Include="RPS.Domain">
+        <HintPath>..\RPS.Domain\bin\Debug\net7.0\RPS.Domain.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+
+
+
+
+
+
 </Project>

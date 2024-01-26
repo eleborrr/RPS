@@ -9,9 +9,9 @@ namespace RPS.Application.Features.GameRoom.GetGameRoomInfo;
 public class GetGameRoomInfoQueryHandler: IQueryHandler<GetGameRoomInfoQuery, GameRoomInfoDto>
 {
     private readonly IRepositoryManager _repositoryManager;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public GetGameRoomInfoQueryHandler(IRepositoryManager repositoryManager, UserManager<User> userManager)
+    public GetGameRoomInfoQueryHandler(IRepositoryManager repositoryManager, UserManager<IdentityUser> userManager)
     {
         _repositoryManager = repositoryManager;
         _userManager = userManager;
@@ -28,7 +28,7 @@ public class GetGameRoomInfoQueryHandler: IQueryHandler<GetGameRoomInfoQuery, Ga
 
 
         return new Result<GameRoomInfoDto>(
-            new GameRoomInfoDto(creator.Username, gameRoom.CreationDate, gameRoom.Id),
+            new GameRoomInfoDto(creator.UserName, gameRoom.CreationDate, gameRoom.Id),
             true);
     }
 }

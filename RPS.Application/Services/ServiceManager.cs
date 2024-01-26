@@ -11,10 +11,10 @@ public class ServiceManager: IServiceManager
 {
     private readonly Lazy<IAccountService> _accountService;
 
-    public ServiceManager(UserManager<User> userManager, 
-        SignInManager<User> signInManager,
+    public ServiceManager(UserManager<IdentityUser> userManager, 
+        SignInManager<IdentityUser> signInManager,
         IJwtGenerator jwtGenerator,
-        IPasswordHasher<User> passwordHasher)
+        IPasswordHasher<IdentityUser> passwordHasher)
     {
         _accountService = new Lazy<IAccountService>(() => new AccountService(userManager, signInManager, jwtGenerator, passwordHasher));
     }

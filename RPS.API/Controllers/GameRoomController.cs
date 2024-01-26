@@ -13,15 +13,15 @@ namespace RPS.API.Controllers;
 public class GameRoomController : Controller
 {
     private readonly IServiceManager _serviceManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IMediator _mediator;
 
     public GameRoomController(
         IServiceManager serviceManager,
-        SignInManager<User> signInManager,
+        SignInManager<IdentityUser> signInManager,
         IConfiguration configuration,
         HttpClient client,
-        UserManager<User> userManager, IMediator mediator)
+        UserManager<IdentityUser> userManager, IMediator mediator)
     {
         _serviceManager = serviceManager;
         _signInManager = signInManager;

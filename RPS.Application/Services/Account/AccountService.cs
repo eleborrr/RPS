@@ -5,23 +5,22 @@ using RPS.Application.Dto.Authentication.Login;
 using RPS.Application.Dto.Authentication.Register;
 using RPS.Application.Helpers.JwtGenerator;
 using RPS.Application.Services.Abstractions.Account;
-using RPS.Domain.Entities;
 using ModelStateDictionary = Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary;
 
 namespace RPS.Application.Services.Account;
 
 public class AccountService : IAccountService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IJwtGenerator _jwtGenerator;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IPasswordHasher<IdentityUser> _passwordHasher;
 
     public AccountService(
-        UserManager<User> userManager,
-        SignInManager<User> signInManager,
+        UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager,
         IJwtGenerator jwtGenerator, 
-        IPasswordHasher<User> passwordHasher)
+        IPasswordHasher<IdentityUser> passwordHasher)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -40,7 +39,7 @@ public class AccountService : IAccountService
 
         if (!modelState.IsValid) return new LoginResponseDto(LoginResponseStatus.Fail);
         
-        var signedUser = await _signInManager.UserManager.FindByNameAsync(model.UserName);
+        var signedUser = await _signInManager.UserManager.FindByNameAsync(model.Username);
         if (signedUser is null) return new LoginResponseDto(LoginResponseStatus.Fail);
         
         var result = await _signInManager.PasswordSignInAsync(signedUser.UserName!, model.Password, false,
@@ -67,7 +66,7 @@ public class AccountService : IAccountService
     public async Task<RegisterResponseDto> Register(RegisterRequestDto model, ModelStateDictionary modelState)
     {
         if (!modelState.IsValid) return new RegisterResponseDto(RegisterResponseStatus.InvalidData);
-        var user = new User
+        var user = new IdentityUser
         {
             UserName = model.UserName
         };
@@ -90,7 +89,7 @@ public class AccountService : IAccountService
     }
 
     public async Task<EditUserResponseDto> EditAccount(
-        User currentUser,
+        IdentityUser currentUser,
         EditUserRequestDto model,
         ModelStateDictionary modelState)
     {

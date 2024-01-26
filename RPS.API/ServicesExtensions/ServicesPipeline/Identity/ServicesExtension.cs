@@ -8,7 +8,7 @@ public static class ServicesCollectionExtension
 {
     public static IServiceCollection AddIdentity(this IServiceCollection services)
     {
-        services.AddIdentity<User, IdentityRole>(
+        services.AddIdentity<IdentityUser, IdentityRole>(
                 options =>
                 {
                     options.SignIn.RequireConfirmedAccount = false;

@@ -12,10 +12,10 @@ namespace RPS.API.Hubs
     public class GameRoomHub : Hub
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IMediator _mediator;
 
-        public GameRoomHub(ApplicationDbContext dbContext, UserManager<User> userManager, IMediator mediator)
+        public GameRoomHub(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, IMediator mediator)
         {
             _dbContext = dbContext;
             _userManager = userManager;
