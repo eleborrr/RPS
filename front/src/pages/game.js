@@ -26,6 +26,7 @@ const Game = () => {
   const [connection, setConnection] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState([]);
+  const [start, setStart] = useState('');
   const [disabledButtons, setDisabledButtons] = useState(false);
   const { roomId } = useParams();
   const [matchId, setMatchId] = useState('');
@@ -128,7 +129,7 @@ const callSendMessageSignalR = async () =>{
   useEffect(() => { 
       callbackSignalR();
   }, [callbackSignalR, token])
-    
+
   
   const endGame = (resultMessage) => {
     setGameState('result');
@@ -164,6 +165,7 @@ const callSendMessageSignalR = async () =>{
           <button
           onClick={() => {
             connection.invoke("JoinLobby", roomId, uid);
+            setStart('start');
           }}>Join</button>
         <div className="game-container">
             <div className="opponent-name">

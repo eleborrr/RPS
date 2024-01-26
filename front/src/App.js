@@ -8,6 +8,7 @@ import jwtDecode from "jwt-decode";
 import TokenName from "./components/token-name-const";
 
 import "./App.css";
+import AllGames from "./pages/all-games";
 
 const App = () => {
   const token = Cookies.get(TokenName);
@@ -20,6 +21,7 @@ const App = () => {
             <Route path='/games' />
             <Route path="/sign-up" element={<SignUpForm />} />
             <Route path="/sign-in" element={<SignInForm />} />
+            <Route path="/all" element={<AllGames />} />
           </Routes>
     </Router>
   );

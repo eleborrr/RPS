@@ -34,6 +34,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<IdentityUser>
             }
         );
 
+
         builder.Entity<GameRoom>().HasData(
             new GameRoom
             {
@@ -46,6 +47,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<IdentityUser>
                 IsStarted = false,
                 TimeToMove = 7
             });
+
         
         builder.Entity<IdentityUser>().HasData(
             new IdentityUser
