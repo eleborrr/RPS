@@ -9,6 +9,7 @@ import TokenName from "./components/token-name-const";
 
 import "./App.css";
 import AllGames from "./pages/all-games";
+import CreateGame from "./pages/create-game";
 
 const App = () => {
   const token = Cookies.get(TokenName);
@@ -21,6 +22,7 @@ const App = () => {
             <Route path="/sign-up" element={<SignUpForm />} />
             <Route path="/sign-in" element={<SignInForm />} />
             <Route path="/all" element={<AllGames />} />
+            <Route path="/create" element={<CreateGame />} />
           </Routes>
     </Router>
   );

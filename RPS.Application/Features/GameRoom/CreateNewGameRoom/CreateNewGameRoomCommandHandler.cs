@@ -21,6 +21,8 @@ public class CreateNewGameRoomCommandHandler: ICommandHandler<CreateNewGameRoomC
         var creator = _userManager.Users.FirstOrDefault(u => u.Id == request.CreatorId);
         var res= await _repositoryManager.GameRoomRepository.AddAsync(new Domain.Entities.GameRoom
         {
+            Id = Guid.NewGuid().ToString(),
+            ParticipantId = "-1",
             TimeToMove = request.TimeToMove,
             EloDelta = request.EloDelta,
             CreatorId = request.CreatorId,

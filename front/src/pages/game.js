@@ -31,9 +31,21 @@ const Game = () => {
   const { roomId } = useParams();
   const [matchId, setMatchId] = useState('');
   const [username, setUsername] = useState('');
+  const [joinButtonHidden, setJoinButtonHidden] = useState(true);
+
+
 
   const messagesRef = useRef(null);
   
+  const CheckForCreator = () => {
+      axiosInstance.get(`/gameroom_info?id=${roomId}`).then(res => {
+        if(res.data.creatorid != uid){
+          setJoinButtonHidden(false);
+        }
+      })
+  }
+
+
   //пшол отсюда
   useEffect(() => {
     if (!token){
@@ -54,7 +66,7 @@ const Game = () => {
         setUsername(response.data.UserName)
       })
     }
-        
+    CheckForCreator(); 
 },[])
     
   
@@ -163,6 +175,7 @@ const callSendMessageSignalR = async () =>{
         <Header />
         <div className='main-container'>
           <button
+          hidden={joinButtonHidden}
           onClick={() => {
             connection.invoke("JoinLobby", roomId, uid);
             setStart('start');

@@ -42,7 +42,7 @@ const AllGames = () => {
         <>
             <Header />
             <div className="all-rooms">
-                <h2>All game rooms</h2>
+                <h2>Все игровые комнаты</h2>
                 <div className="rooms-container">
                     {rooms.map(room => (
                         <li onClick={() => navigate(`${room.gameRoomId}`)}>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RPS.Application.Dto.Authentication.Login;
+using RPS.Application.Features.GameRoom.CreateNewGameRoom;
 using RPS.Application.Features.GameRoom.GetAllRooms;
 using RPS.Application.Features.GameRoom.GetGameRoomInfo;
 using RPS.Application.Services.Abstractions;
@@ -15,6 +16,7 @@ public class GameRoomController : Controller
 {
     private readonly IServiceManager _serviceManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly IMediator _mediator;
 
     public GameRoomController(
@@ -26,6 +28,7 @@ public class GameRoomController : Controller
     {
         _serviceManager = serviceManager;
         _signInManager = signInManager;
+        _userManager = userManager;
         _mediator = mediator;
     }
 
@@ -49,5 +52,17 @@ public class GameRoomController : Controller
         
         //TODO throw 404
         return Json(allRooms.Error);
+    }
+
+    [HttpPost("/createRoom")]
+    public async Task<JsonResult> CreateRoom([FromBody] CreateNewRoomDto dto)
+    {
+        var res = await _mediator.Send(new CreateNewGameRoomCommand(7, dto.maxRating, dto.userId));
+        if (res.IsSuccess)
+        {
+            return Json(res.Value);
+        }
+        //TODO throw 404
+        return Json(res.Error);
     }
 }
