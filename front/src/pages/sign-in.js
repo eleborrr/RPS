@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import Cookies from 'js-cookie';
+import {axiosInstance} from "../components/axios_server";
 
 const SignInForm = () => {
+  const [spanClass, setSpanClass] = useState('hide')
+  const [errMessage, setErrMessage] = useState('')
+
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: ""
   });
 
@@ -20,9 +25,22 @@ const SignInForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    console.log("The form was submitted with the following data:");
-    console.log(formData);
+    axiosInstance.post('/login', {
+      userName: formData.username,
+      password: formData.password,
+      rememberMe: true,
+      returnUrl: ""
+    }).then((res) => {
+      console.log(res.data);
+      if (!res.data.successful){
+        setSpanClass('errorMessage');
+        setErrMessage(res.data.message);
+      }
+      else{
+        Cookies.set('token', res.data.message);
+        document.location.replace(`/games`);
+      }
+    }) ;
   };
 
   return (
@@ -63,17 +81,17 @@ const SignInForm = () => {
           <div className="formCenter">
       <form className="formFields" onSubmit={handleSubmit}>
         <div className="formField">
-          <label className="formFieldLabel" htmlFor="email">
-            E-Mail Address
+          <label className="formFieldLabel" htmlFor="username">
+            Username
           </label>
           <input
-            type="email"
-            id="email"
+            type="username"
+            id="username"
             className="formFieldInput"
-            placeholder="Enter your email"
-            name="email"
+            placeholder="Enter your username"
+            name="username"
             autoComplete="off"
-            value={formData.email}
+            value={formData.username}
             onChange={handleChange}
           />
         </div>
@@ -93,15 +111,16 @@ const SignInForm = () => {
             onChange={handleChange}
           />
         </div>
-
-        <div className="formField">
-          <button type="submit" className="formFieldButton">
-            Sign In
-          </button>{" "}
-          <Link to="/" className="formFieldLink">
-            Create an account
-          </Link>
-        </div>
+        <form>
+          <div className="formField">
+            <button type="submit" onClick={handleSubmit} className="formFieldButton">
+              Sign In
+            </button>{" "}
+            <Link to="/sign-up" className="formFieldLink">
+              Create an account
+            </Link>
+          </div>
+        </form>
       </form>
     </div>
           

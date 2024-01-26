@@ -1,4 +1,4 @@
-import axiosInstance from "../components/axios_server";
+import {axiosInstance} from "../components/axios_server";
 import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import '../styles/game.css';
