@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RPS.Application.Dto.Authentication.Login;
+using RPS.Application.Features.GameRoom.GetAllRooms;
 using RPS.Application.Features.GameRoom.GetGameRoomInfo;
 using RPS.Application.Services.Abstractions;
 using RPS.Domain.Entities;
@@ -37,5 +38,16 @@ public class GameRoomController : Controller
         
         //TODO throw 404
         return Json(gameRoomInfo.Error);
+    }
+
+    [HttpGet("/allRooms")]
+    public async Task<JsonResult> GetAllGameRooms()
+    {
+        var allRooms = await _mediator.Send(new GetAllRoomsQuery());
+        if (allRooms.IsSuccess)
+            return Json(allRooms.Value);
+        
+        //TODO throw 404
+        return Json(allRooms.Error);
     }
 }

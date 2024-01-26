@@ -1,4 +1,4 @@
-import axiosInstance from "../components/axios_server";
+import axiosInstance from "../components/axios_server.js";
 import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import '../styles/game.css';
@@ -26,6 +26,7 @@ const Game = () => {
   const [connection, setConnection] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState([]);
+  const [start, setStart] = useState('');
   const [disabledButtons, setDisabledButtons] = useState(false);
   const { roomId } = useParams();
   const [matchId, setMatchId] = useState('');
@@ -113,15 +114,19 @@ const callSendMessageSignalR = async () =>{
 
 
   useEffect(() => {
+    console.log('USE EFFECT');
     if(connection != null){
+      console.log('GAME STARTED FROM USE EFECT')
     connection.on("GameStarted", function(res){
-      setMatchId(res.data.MatchId)
+      setMatchId(res.data)
       startGame();
     })
   }
-  },)
+  },[start])
+
   const startGame = () => {
     setGameState('playing');
+    console.log("GAME STARTED");
   };
 
   
@@ -180,6 +185,7 @@ const callSendMessageSignalR = async () =>{
           <button
           onClick={() => {
             connection.invoke("JoinLobby", roomId, uid);
+            setStart('start');
           }}>Join</button>
         <div className="game-container">
             <div className="opponent-name">

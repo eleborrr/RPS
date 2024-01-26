@@ -6,7 +6,6 @@ const Header = () => {
       <div>
         <button style={buttonStyle}>Все игры</button>
         <button style={buttonStyle}>Рейтинг</button>
-        <button style={buttonStyle}>Профиль</button>
       </div>
     </header>
   );
