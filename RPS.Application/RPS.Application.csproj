@@ -11,7 +11,6 @@
       <Folder Include="Features\Rating\AddUserInRating\" />
       <Folder Include="Features\Rating\GetUsersRating\" />
       <Folder Include="Features\Rating\UpdateUserRating\" />
-      <Folder Include="Services\" />
     </ItemGroup>
 
     <ItemGroup>

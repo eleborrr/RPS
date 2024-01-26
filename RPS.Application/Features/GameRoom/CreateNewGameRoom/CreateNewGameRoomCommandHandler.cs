@@ -19,7 +19,7 @@ public class CreateNewGameRoomCommandHandler: ICommandHandler<CreateNewGameRoomC
         {
             TimeToMove = request.TimeToMove,
             EloDelta = request.EloDelta,
-            Participant1 = request.CreatorId
+            CreatorId = request.CreatorId
         });
         return new Result<string>(res, true);
     }

@@ -10,9 +10,9 @@ namespace RPS.Application.Helpers.JwtGenerator;
 public class JwtGenerator : IJwtGenerator
 {
     private readonly IConfiguration _configuration;
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public JwtGenerator(IConfiguration conf, UserManager<User> userManager)
+    public JwtGenerator(IConfiguration conf, UserManager<IdentityUser> userManager)
     {
         _configuration = conf;
         _userManager = userManager;

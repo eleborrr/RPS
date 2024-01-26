@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RPS.Domain.Entities;
 
 namespace RPS.Infrastructure.Database;
 
-public sealed class ApplicationDbContext: IdentityDbContext<User>
+public sealed class ApplicationDbContext: IdentityDbContext<IdentityUser>
 {
     public DbSet<Message> Messages { get; set; }
     public DbSet<GameRoom> GameRooms { get; set; }
@@ -13,18 +14,18 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     { 
-        // Database.Migrate();
+        Database.Migrate();
     }
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<User>()
+        builder.Entity<IdentityUser>()
             .Ignore(u => u.PhoneNumber)
             .Ignore(u => u.PhoneNumberConfirmed)
             .Ignore(u => u.Email)
             .Ignore(u => u.EmailConfirmed);
         
-        builder.Entity<User>().HasData(
-            new User
+        builder.Entity<IdentityUser>().HasData(
+            new IdentityUser
             {
                 Id = "1",
                 UserName = "Glebster",
@@ -32,8 +33,8 @@ public sealed class ApplicationDbContext: IdentityDbContext<User>
             }
         );
         
-        builder.Entity<User>().HasData(
-            new User
+        builder.Entity<IdentityUser>().HasData(
+            new IdentityUser
             {
                 Id = "2",
                 UserName = "RafLox",

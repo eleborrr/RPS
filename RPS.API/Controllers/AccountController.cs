@@ -16,16 +16,13 @@ namespace RPS.API.Controllers;
 [Route("[controller]")]
 public class AccountController : Controller
 {
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly IServiceManager _serviceManager;
-    private readonly IMediator _mediator;
     public AccountController(
         IServiceManager serviceManager,
-        UserManager<User> userManager,
-        IMediator mediator)
+        UserManager<IdentityUser> userManager)
     {
         _userManager = userManager;
-        _mediator = mediator;
         _serviceManager = serviceManager;
     }
 
@@ -64,12 +61,12 @@ public class AccountController : Controller
     {
         var users = _userManager.Users;
         
-        var result = new List<User>();
+        var result = new List<IdentityUser>();
         foreach (var user in users)
         {
             result.Add(new ()
             {
-                Username = user.UserName!,
+                UserName = user.UserName!,
                 Id = user.Id,
             });
         }
