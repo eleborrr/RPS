@@ -6,7 +6,7 @@ public class LoginRequestDto
 {
     [Required]
     [Display(Name = "Username")]
-    public string UserName { get; set; } = default!;
+    public string Username { get; set; } = default!;
     
     [Required]
     [DataType(DataType.Password)]

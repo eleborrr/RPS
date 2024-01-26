@@ -14,14 +14,14 @@ namespace RPS.API.Controllers;
 public class LoginController : Controller
 {
     private readonly IServiceManager _serviceManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
 
     public LoginController(
         IServiceManager serviceManager,
-        SignInManager<User> signInManager,
+        SignInManager<IdentityUser> signInManager,
         IConfiguration configuration,
         HttpClient client,
-        UserManager<User> userManager)
+        UserManager<IdentityUser> userManager)
     {
         _serviceManager = serviceManager;
         _signInManager = signInManager;

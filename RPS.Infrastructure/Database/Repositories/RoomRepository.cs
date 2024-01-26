@@ -18,10 +18,16 @@ public class GameRoomRepository: IGameRoomRepository
         return await _dbContext.GameRooms.ToListAsync(cancellationToken);
     }
 
-    public async Task AddAsync(GameRoom room)
+    public async Task<string> AddAsync(GameRoom room)
     {
-        await _dbContext.GameRooms.AddAsync(room);
+        var id = await _dbContext.GameRooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
+        return id.Entity.Id;
+    }
+
+    public Task UpdateAsync(GameRoom match)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<GameRoom?> GetByGameRoomIdAsync(string gameRoomId)
