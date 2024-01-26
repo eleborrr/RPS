@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using RPS.Application.Features.GameRoom.AddParticipant;
+using RPS.Application.Features.GameRoom.GetGameRoomInfo;
+using RPS.Application.Features.GameRoom.GetParticipants;
+using RPS.Application.Features.GameRoom.RemoveParticipant;
+using RPS.Application.Features.Match.CreateNewMatch;
 using RPS.Application.Features.Match.MakeMove;
 using RPS.Application.Features.Round.GetRoundResult;
 using RPS.Domain.Entities;
@@ -77,13 +81,27 @@ namespace RPS.API.Hubs
         public async Task JoinLobby(string gameRoomId, string userId)
         {
             await _mediator.Send(new AddParticipantCommand(gameRoomId, userId));
-            await SendCountDownTick(7, gameRoomId);
-            await Clients.Group(gameRoomId).SendAsync("GameStarted", true);
         }
 
-        public async Task SendResultOfRound(string gameRoomId, string matchId)
+        public async Task StartRound(string gameRoomId, string userId)
         {
-            var res = await _mediator.Send(new GetRoundResultQuery(matchId));
+            var participantsCount = (await _mediator.Send(new GetParticipantsQuery())).Value!.Count();
+            var creatorId = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value.CreatorId;
+            while (participantsCount == 2)
+            {
+                var newRoundId = (await _mediator.Send(new CreateNewRoundCommand(creatorId, userId)))
+                    .Value;
+                await Clients.Group(gameRoomId).SendAsync("GameStarted", newRoundId);
+                
+                await SendCountDownTick(7, gameRoomId);
+                await SendResultOfRound(gameRoomId, newRoundId);
+                participantsCount = (await _mediator.Send(new GetParticipantsQuery())).Value!.Count();
+            }
+        }
+
+        public async Task SendResultOfRound(string gameRoomId, string roundId)
+        {
+            var res = await _mediator.Send(new GetRoundResultQuery(roundId));
             await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.Value);
         }
 
@@ -92,7 +110,7 @@ namespace RPS.API.Hubs
         {
             while (timer > 0)
             {
-                await Clients.Group(gameRoomId).SendAsync("ReceivePrivateMessage", timer);
+                await Clients.Group(gameRoomId).SendAsync("ReceiveTimer", timer);
                 timer--;
                 Thread.Sleep(1000);
             }
@@ -105,6 +123,7 @@ namespace RPS.API.Hubs
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
+            // _mediator.Send(new RemoveParticipantCommand());
             await base.OnDisconnectedAsync(exception);
         }
         

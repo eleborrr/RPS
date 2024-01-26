@@ -4,16 +4,16 @@ using RPS.Domain.Repositories.Abstractions;
 
 namespace RPS.Application.Features.Match.CreateNewMatch;
 
-public class CreateNewMatchCommandHandler: ICommandHandler<CreateNewMatchCommand, string>
+public class CreateNewRoundCommandHandler: ICommandHandler<CreateNewRoundCommand, string>
 {
     private readonly IRepositoryManager _repositoryManager;
 
-    public CreateNewMatchCommandHandler(IRepositoryManager repositoryManager)
+    public CreateNewRoundCommandHandler(IRepositoryManager repositoryManager)
     {
         _repositoryManager = repositoryManager;
     }
 
-    public async Task<Result<string>> Handle(CreateNewMatchCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(CreateNewRoundCommand request, CancellationToken cancellationToken)
     {
         var id = await _repositoryManager.RoundRepository.AddAsync(new Domain.Entities.Round
         {

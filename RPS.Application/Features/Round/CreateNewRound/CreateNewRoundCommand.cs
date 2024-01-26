@@ -2,4 +2,4 @@
 
 namespace RPS.Application.Features.Match.CreateNewMatch;
 
-public record CreateNewMatchCommand(string FirstUserId, string SecondUserId): ICommand<string>;
+public record CreateNewRoundCommand(string FirstUserId, string SecondUserId): ICommand<string>;

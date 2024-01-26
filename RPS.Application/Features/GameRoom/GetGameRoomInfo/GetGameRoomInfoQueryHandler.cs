@@ -28,7 +28,7 @@ public class GetGameRoomInfoQueryHandler: IQueryHandler<GetGameRoomInfoQuery, Ga
 
 
         return new Result<GameRoomInfoDto>(
-            new GameRoomInfoDto(creator.UserName, gameRoom.CreationDate, gameRoom.Id),
+            new GameRoomInfoDto(creator.UserName, gameRoom.CreationDate, gameRoom.Id, creator.Id),
             true);
     }
 }
