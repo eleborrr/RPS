@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,13 +16,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
       <Folder Include="ServicesExtensions\" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\RPS.Application\RPS.Application.csproj" />
       <ProjectReference Include="..\RPS.Infrastructure\RPS.Infrastructure.csproj" />
       <ProjectReference Include="..\RPS.Shared\RPS.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

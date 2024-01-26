@@ -39,6 +39,7 @@ public sealed class ApplicationDbContext: IdentityDbContext<IdentityUser>
             {
                 Id = "12",
                 CreationDate = DateTime.Now,
+                ParticipantId = "-1",
                 CreatorId = "2",
                 CreatorConnected = true,
                 EloDelta = 25,
