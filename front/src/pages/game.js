@@ -146,25 +146,7 @@ const callSendMessageSignalR = async () =>{
   useEffect(() => { 
       callbackSignalR();
   }, [callbackSignalR, token])
-    
-
-  useEffect(() => {
-    console.log('USE EFFECT');
-    if(connection != null){
-      console.log('GAME STARTED FROM USE EFECT')
-    connection.on("GameStarted", function(res){
-      setMatchId(res.data)
-      startGame();
-    })
-  }
-  },[start])
-
-  const startGame = () => {
-    setGameState('playing');
-    console.log("GAME STARTED");
-  };
-  
-  
+      
   const endGame = (resultMessage) => {
     setGameState('result');
     setResult(resultMessage);
