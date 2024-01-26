@@ -8,9 +8,11 @@ using RPS.Application.Features.GameRoom.GetParticipants;
 using RPS.Application.Features.GameRoom.RemoveParticipant;
 using RPS.Application.Features.Match.CreateNewMatch;
 using RPS.Application.Features.Match.MakeMove;
+using RPS.Application.Features.MongoDb.SaveRating;
 using RPS.Application.Features.Round.GetRoundResult;
 using RPS.Domain.Entities;
 using RPS.Infrastructure.Database;
+using RPS.Shared.Rating;
 
 namespace RPS.API.Hubs
 {
@@ -106,6 +108,7 @@ namespace RPS.API.Hubs
         public async Task SendResultOfRound(string gameRoomId, string roundId)
         {
             var res = await _mediator.Send(new GetRoundResultQuery(roundId));
+            _mediator.Send(new SaveUserRatingMongoCommand(new UserRatingMongoDto()));
             await Clients.Group(gameRoomId).SendAsync("ReceiveGameResult", res.Value);
         }
 
