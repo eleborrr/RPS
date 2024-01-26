@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Header from '../components/header';
-import {axiosInstance} from "../components/axios_server";
+import axiosInstance from "../components/axios_server";
 import Cookies from "js-cookie";
 
 

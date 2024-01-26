@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Cookies from 'js-cookie';
-import {axiosInstance} from "../components/axios_server";
+import axiosInstance from "../components/axios_server";
 
 const SignInForm = () => {
   const [spanClass, setSpanClass] = useState('hide')
