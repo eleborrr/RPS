@@ -81,21 +81,22 @@ namespace RPS.API.Hubs
         public async Task JoinLobby(string gameRoomId, string userId)
         {
             await _mediator.Send(new AddParticipantCommand(gameRoomId, userId));
+            await StartRound(gameRoomId);
         }
 
-        public async Task StartRound(string gameRoomId, string userId)
+        public async Task StartRound(string gameRoomId)
         {
-            var participantsCount = (await _mediator.Send(new GetParticipantsQuery())).Value!.Count();
-            var creatorId = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value.CreatorId;
-            while (participantsCount == 2)
+            var roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
+            while (roomInfo.CreatorConnected && roomInfo.ParticipantConnected)
             {
-                var newRoundId = (await _mediator.Send(new CreateNewRoundCommand(creatorId, userId)))
+                var newRoundId = (await _mediator.Send(
+                        new CreateNewRoundCommand(roomInfo.CreatorId, roomInfo.ParticipantId)))
                     .Value;
                 await Clients.Group(gameRoomId).SendAsync("GameStarted", newRoundId);
                 
                 await SendCountDownTick(7, gameRoomId);
                 await SendResultOfRound(gameRoomId, newRoundId);
-                participantsCount = (await _mediator.Send(new GetParticipantsQuery())).Value!.Count();
+                roomInfo = (await _mediator.Send(new GetGameRoomInfoQuery(gameRoomId))).Value!;
             }
         }
 
