@@ -1,9 +1,9 @@
-﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
-using RPS.Application.Dto.MediatR;
-using RPS.Application.Services.Abstractions;
+﻿using RPS.Application.Dto.MediatR;
+using RPS.Application.Features.MongoDb.SaveRating;
+using RPS.Application.Services.Abstractions.Cqrs.Commands;
 using RPS.Infrastructure.MongoClient;
 
-namespace RPS.Application.Features.MongoDb.SaveRating;
+namespace RPS.Application.Features.Rating.SaveRating;
 
 public class SaveUserRatingMongoCommandHandler: ICommandHandler<SaveUserRatingMongoCommand>
 {

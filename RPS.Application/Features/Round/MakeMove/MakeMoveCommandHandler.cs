@@ -1,5 +1,5 @@
-﻿using BeaverTinder.Application.Services.Abstractions.Cqrs.Commands;
-using RPS.Application.Dto.MediatR;
+﻿using RPS.Application.Dto.MediatR;
+using RPS.Application.Services.Abstractions.Cqrs.Commands;
 using RPS.Domain.Repositories.Abstractions;
 
 namespace RPS.Application.Features.Match.MakeMove;

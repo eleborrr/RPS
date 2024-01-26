@@ -7,12 +7,10 @@ namespace RPS.Mongo.Services.Rating;
 
 public class RatingConsumer: IConsumer<AdjustUserRatingMongoDto>
 {
-    private readonly IMediator _mediator;
     private readonly IMongoDbClient _mongoDbClient;
 
-    public RatingConsumer(IMediator mediator, IMongoDbClient mongoDbClient)
+    public RatingConsumer(IMongoDbClient mongoDbClient)
     {
-        _mediator = mediator;
         _mongoDbClient = mongoDbClient;
     }
 
