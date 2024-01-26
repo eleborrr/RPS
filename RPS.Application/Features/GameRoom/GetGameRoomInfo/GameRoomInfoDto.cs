@@ -1,3 +1,3 @@
 ﻿namespace RPS.Application.Features.GameRoom.GetGameRoomInfo;
 
-public record GameRoomInfoDto(string CreatorName, DateTime CreationDate, string GameRoomId);
+public record GameRoomInfoDto(string CreatorName, DateTime CreationDate, string GameRoomId, string CreatorId);
