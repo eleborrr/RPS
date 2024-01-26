@@ -26,24 +26,24 @@ public class GetRoundResultQueryHandler: IQueryHandler<GetRoundResultQuery, Roun
             return new Result<RoundResultDto>(null, false, $"Match with id {request.MatchId} not exists");
 
         if (match.FirstUserMoveId == match.SecondUserMoveId)
-            return new Result<RoundResultDto>(new RoundResultDto("-1"), true);
+            return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId, match.SecondUserId, true), true);
         
         switch (match)
         {
             case {FirstUserMoveId: ScissorsId, SecondUserMoveId: PaperId}: 
-                return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId), true);
+                return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId, match.SecondUserId, false), true);
             case {FirstUserMoveId: PaperId, SecondUserMoveId: ScissorsId}: 
-                return new Result<RoundResultDto>(new RoundResultDto(match.SecondUserId), true);
+                return new Result<RoundResultDto>(new RoundResultDto(match.SecondUserId, match.FirstUserId, false), true);
             
             case {FirstUserMoveId: RockId, SecondUserMoveId: ScissorsId}: 
-                return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId), true);
+                return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId, match.SecondUserId, false), true);
             case {FirstUserMoveId: ScissorsId, SecondUserMoveId: RockId}: 
-                return new Result<RoundResultDto>(new RoundResultDto(match.SecondUserId), true);
+                return new Result<RoundResultDto>(new RoundResultDto(match.SecondUserId, match.FirstUserId, false), true);
             
             case {FirstUserMoveId: PaperId, SecondUserMoveId: RockId}: 
-                return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId), true);
+                return new Result<RoundResultDto>(new RoundResultDto(match.FirstUserId, match.SecondUserId, false), true);
             case {FirstUserMoveId: RockId, SecondUserMoveId: PaperId}: 
-                return new Result<RoundResultDto>(new RoundResultDto(match.SecondUserId), true);
+                return new Result<RoundResultDto>(new RoundResultDto(match.SecondUserId, match.FirstUserId, false), true);
         }
 
         return new Result<RoundResultDto>(null, false, "Something went wrong. Try again later.");
